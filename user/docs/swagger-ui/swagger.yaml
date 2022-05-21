@@ -1,0 +1,94 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  infoModel:
+    description: |-
+      InfoModel is the body format of PostInfoV1
+      Info Model
+    properties:
+      name:
+        description: The Name info
+        example: Trump
+        type: string
+        x-go-name: Name
+    required:
+    - name
+    type: object
+    x-go-name: InfoModel
+    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/infoexample
+host: localhost:7712
+info:
+  description: Documentation of Worker.
+  title: Worker.
+  version: '%VERSION_TO_BE_REPLACED_BY_GITRUNNER%'
+paths:
+  /.spec:
+    get:
+      description: GetSpec returns API Spec. This API is for testing & development
+        only.
+      operationId: GetSpec
+      responses:
+        "301":
+          $ref: '#/responses/emptyResponse'
+        "404":
+          $ref: '#/responses/genericError'
+      summary: Get Server API Specification
+      tags:
+      - Development
+  /v1/info:
+    get:
+      description: GetInfo returns some information.
+      operationId: GetInfo
+      responses:
+        "200":
+          $ref: '#/responses/infoResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Get Information
+      tags:
+      - InfoExample
+    post:
+      description: PostInfo returns some information.
+      operationId: PostInfo
+      parameters:
+      - description: The request body
+        in: body
+        name: info body
+        required: true
+        schema:
+          $ref: '#/definitions/infoModel'
+        x-go-name: Info
+      responses:
+        "204":
+          $ref: '#/responses/emptyResponse'
+        "400":
+          $ref: '#/responses/BadRequestErrorResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Post Information
+      tags:
+      - InfoExample
+produces:
+- application/json
+responses:
+  emptyResponse:
+    description: EmptyResponse are sent when the HTTP status code is 204.
+  genericError:
+    description: |-
+      A GenericError is the default error message that is generated.
+      For certain status codes there are more appropriate error structures.
+    headers:
+      message:
+        description: |-
+          The error message
+
+          required: true
+        type: string
+  infoResponse:
+    description: InfoResponse ...
+    schema:
+      $ref: '#/definitions/infoModel'
+schemes:
+- https
+swagger: "2.0"
