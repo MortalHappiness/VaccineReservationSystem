@@ -2,7 +2,7 @@
 //
 // Documentation of Worker.
 //
-//     Schemes: https
+//     Schemes: http
 //     Version: %VERSION_TO_BE_REPLACED_BY_GITRUNNER%
 //     Host: localhost:7712
 //     BasePath: /

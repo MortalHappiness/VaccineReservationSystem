@@ -18,7 +18,8 @@ func MakeRouter(opt *Options) *gin.Engine {
 	{
 		// TODO: add apis
 		v1 := router.Group("/v1")
-		v1.GET("/info", opt.infoController.GetInfoV1)
+		v1.GET("/user", opt.userController.GetUserV1)
+		v1.POST("/user", opt.userController.PostUserV1)
 	}
 	// API Spec Swagger UI
 	{

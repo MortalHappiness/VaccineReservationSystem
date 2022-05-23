@@ -2,21 +2,48 @@ basePath: /
 consumes:
 - application/json
 definitions:
-  infoModel:
-    description: |-
-      InfoModel is the body format of PostInfoV1
-      Info Model
+  UserModel:
+    description: UserModel is the body format of UserResponse
     properties:
+      address:
+        description: The user address
+        example: No.1, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan
+        type: string
+        x-go-name: Address
+      birthday:
+        description: The user birthday
+        example: 2022/05/23
+        type: string
+        x-go-name: BirthDay
+      gender:
+        description: The user gender
+        example: male
+        type: string
+        x-go-name: Gender
+      id:
+        description: The user ID
+        example: A123456789
+        type: string
+        x-go-name: ID
       name:
-        description: The Name info
-        example: Trump
+        description: The user name
+        example: bob
         type: string
         x-go-name: Name
+      phone:
+        description: The user phone number
+        example: "0912345678"
+        type: string
+        x-go-name: Phone
     required:
     - name
+    - gender
+    - id
+    - birthday
+    - address
+    - phone
     type: object
-    x-go-name: InfoModel
-    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/infoexample
+    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/user
 host: localhost:7712
 info:
   description: Documentation of Worker.
@@ -36,42 +63,43 @@ paths:
       summary: Get Server API Specification
       tags:
       - Development
-  /v1/info:
+  /v1/user:
     get:
-      description: GetInfo returns some information.
-      operationId: GetInfo
+      operationId: GetUser
       responses:
         "200":
-          $ref: '#/responses/infoResponse'
+          $ref: '#/responses/UserResponse'
         "500":
           $ref: '#/responses/InternalServerErrorResponse'
-      summary: Get Information
+      summary: Get the user information.
       tags:
-      - InfoExample
+      - User
     post:
-      description: PostInfo returns some information.
-      operationId: PostInfo
+      operationId: PostUserRequest
       parameters:
-      - description: The request body
+      - description: The user info
         in: body
-        name: info body
-        required: true
+        name: user
         schema:
-          $ref: '#/definitions/infoModel'
-        x-go-name: Info
+          $ref: '#/definitions/UserModel'
+        x-go-name: User
       responses:
-        "204":
-          $ref: '#/responses/emptyResponse'
+        "200":
+          $ref: '#/responses/UserResponse'
         "400":
           $ref: '#/responses/BadRequestErrorResponse'
         "500":
           $ref: '#/responses/InternalServerErrorResponse'
-      summary: Post Information
+      summary: Add a new user.
       tags:
-      - InfoExample
+      - User
 produces:
 - application/json
 responses:
+  UserResponse:
+    description: UserResponse is the response of GetUserV1
+    schema:
+      $ref: '#/definitions/UserModel'
   emptyResponse:
     description: EmptyResponse are sent when the HTTP status code is 204.
   genericError:
@@ -85,10 +113,6 @@ responses:
 
           required: true
         type: string
-  infoResponse:
-    description: InfoResponse ...
-    schema:
-      $ref: '#/definitions/infoModel'
 schemes:
-- https
+- http
 swagger: "2.0"
