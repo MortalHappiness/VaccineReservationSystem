@@ -20,6 +20,7 @@ Create a file named `.env` and write the following content into it
 
 ```
 PROJECT_ID=my-project
+INSTANCE_ID=my-instance
 ```
 
 ### Database seeding

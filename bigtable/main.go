@@ -27,30 +27,40 @@ func main() {
 		log.Fatal("Environment variable not found: INSTANCE_ID")
 	}
 
-	tableID := "my-table"
-
 	ctx := context.Background()
 
-	// Set up Bigtable data operations client.
+	adminClient, err := bigtable.NewAdminClient(ctx, projectID, instanceID)
+	if err != nil {
+		log.Fatalf("Could not create admin client: %v", err)
+	}
 	client, err := bigtable.NewClient(ctx, projectID, instanceID)
 	if err != nil {
 		log.Fatalf("Could not create data operations client: %v", err)
 	}
 
-	tbl := client.Open(tableID)
+	adminClient.DeleteTable(ctx, "User")
+	adminClient.DeleteTable(ctx, "Reservation")
+	adminClient.DeleteTable(ctx, "Hospital")
 
-	// Read data in a row using a row key
-	rowKey := "r1"
-	columnFamilyName := "cf1"
+	adminClient.CreateTable(ctx, "User")
+	adminClient.CreateTable(ctx, "Reservation")
+	adminClient.CreateTable(ctx, "Hospital")
 
-	log.Printf("Getting a single row by row key:")
-	row, err := tbl.ReadRow(ctx, rowKey)
+	adminClient.CreateColumnFamily(ctx, "User", "user")
+
+	var mutation *bigtable.Mutation
+
+	userTable := client.Open("User")
+	mutation = bigtable.NewMutation()
+	mutation.Set("user", "name", bigtable.Now(), []byte("Alice"))
+	err = userTable.Apply(ctx, "alice-id", mutation)
 	if err != nil {
-		log.Fatalf("Could not read row with key %s: %v", rowKey, err)
+		log.Fatalf("Could not apply row mutation: %v", err)
 	}
-	log.Printf("Row key: %s\n", rowKey)
-	log.Printf("Data: %s\n", string(row[columnFamilyName][0].Value))
 
+	if err = adminClient.Close(); err != nil {
+		log.Fatalf("Could not close admin client: %v", err)
+	}
 	if err = client.Close(); err != nil {
 		log.Fatalf("Could not close data operations client: %v", err)
 	}
