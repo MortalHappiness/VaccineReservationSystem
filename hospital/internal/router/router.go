@@ -20,6 +20,7 @@ func MakeRouter(opt *Options) *gin.Engine {
 		v1 := router.Group("/v1")
 		v1.GET("/hospital", opt.hospitalController.GetHospitalV1)
 		v1.POST("/hospital", opt.hospitalController.PostHospitalV1)
+		v1.PUT("/hospital/:id", opt.hospitalController.PutHospitalV1)
 		v1.DELETE("/hospital/:id", opt.hospitalController.DeleteHospitalV1)
 	}
 	// API Spec Swagger UI
