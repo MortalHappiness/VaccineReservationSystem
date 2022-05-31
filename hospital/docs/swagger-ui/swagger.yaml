@@ -1,0 +1,119 @@
+basePath: /
+consumes:
+  - application/json
+definitions:
+  UserModel:
+    description: UserModel is the body format of UserResponse
+    properties:
+      address:
+        description: The user address
+        example: No.1, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan
+        type: string
+        x-go-name: Address
+      birthday:
+        description: The user birthday
+        example: 2022/05/23
+        type: string
+        x-go-name: BirthDay
+      gender:
+        description: The user gender
+        example: male
+        type: string
+        x-go-name: Gender
+      id:
+        description: The user ID
+        example: A123456789
+        type: string
+        x-go-name: ID
+      name:
+        description: The user name
+        example: bob
+        type: string
+        x-go-name: Name
+      phone:
+        description: The user phone number
+        example: "0912345678"
+        type: string
+        x-go-name: Phone
+    required:
+      - name
+      - gender
+      - id
+      - birthday
+      - address
+      - phone
+    type: object
+    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/hospital/internal/controllers/user
+host: localhost:7712
+info:
+  description: Documentation of Worker.
+  title: Worker.
+  version: "%VERSION_TO_BE_REPLACED_BY_GITRUNNER%"
+paths:
+  /.spec:
+    get:
+      description:
+        GetSpec returns API Spec. This API is for testing & development
+        only.
+      operationId: GetSpec
+      responses:
+        "301":
+          $ref: "#/responses/emptyResponse"
+        "404":
+          $ref: "#/responses/genericError"
+      summary: Get Server API Specification
+      tags:
+        - Development
+  /v1/user:
+    get:
+      operationId: GetUser
+      responses:
+        "200":
+          $ref: "#/responses/UserResponse"
+        "500":
+          $ref: "#/responses/InternalServerErrorResponse"
+      summary: Get the user information.
+      tags:
+        - User
+    post:
+      operationId: PostUserRequest
+      parameters:
+        - description: The user info
+          in: body
+          name: user
+          schema:
+            $ref: "#/definitions/UserModel"
+          x-go-name: User
+      responses:
+        "200":
+          $ref: "#/responses/UserResponse"
+        "400":
+          $ref: "#/responses/BadRequestErrorResponse"
+        "500":
+          $ref: "#/responses/InternalServerErrorResponse"
+      summary: Add a new user.
+      tags:
+        - User
+produces:
+  - application/json
+responses:
+  UserResponse:
+    description: UserResponse is the response of GetUserV1
+    schema:
+      $ref: "#/definitions/UserModel"
+  emptyResponse:
+    description: EmptyResponse are sent when the HTTP status code is 204.
+  genericError:
+    description: |-
+      A GenericError is the default error message that is generated.
+      For certain status codes there are more appropriate error structures.
+    headers:
+      message:
+        description: |-
+          The error message
+
+          required: true
+        type: string
+schemes:
+  - http
+swagger: "2.0"
