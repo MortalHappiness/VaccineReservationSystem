@@ -16,5 +16,5 @@ import (
 //   500: InternalServerErrorResponse
 //
 func (u *Hospital) DeleteHospitalV1(c *gin.Context) {
-	c.JSON(http.StatusOK, "Ok")
+	c.JSON(http.StatusOK, c.Param("id"))
 }
