@@ -8,7 +8,7 @@ function Sidebar() {
               href="#"
               class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              <span class="ml-3">Dashboard</span>
+              <span class="ml-3">首頁</span>
             </a>
           </li>
           <li>
@@ -16,10 +16,7 @@ function Sidebar() {
               href="#"
               class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              <span class="flex-1 ml-3 whitespace-nowrap">Kanban</span>
-              <span class="inline-flex justify-center items-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                Pro
-              </span>
+              <span class="ml-3 whitespace-nowrap">個人資料</span>
             </a>
           </li>
           <li>
@@ -27,10 +24,7 @@ function Sidebar() {
               href="#"
               class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              <span class="flex-1 ml-3 whitespace-nowrap">Inbox</span>
-              <span class="inline-flex justify-center items-center p-3 ml-3 w-3 h-3 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">
-                3
-              </span>
+              <span class="ml-3 whitespace-nowrap">疫苗預約</span>
             </a>
           </li>
           <li>
@@ -38,10 +32,10 @@ function Sidebar() {
               href="#"
               class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              <span class="flex-1 ml-3 whitespace-nowrap">Users</span>
+              <span class="ml-3 whitespace-nowrap">預約查詢與取消</span>
             </a>
           </li>
-          <li>
+          {/* <li>
             <a
               href="#"
               class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -64,7 +58,7 @@ function Sidebar() {
             >
               <span class="flex-1 ml-3 whitespace-nowrap">Sign Up</span>
             </a>
-          </li>
+          </li> */}
         </ul>
       </div>
     </aside>
