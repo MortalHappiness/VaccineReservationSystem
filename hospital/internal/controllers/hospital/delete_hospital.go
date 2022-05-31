@@ -7,7 +7,7 @@ import (
 )
 
 // DeleteHospitalV1 returns hospital id.
-// swagger:route DELETE /v1/Hospital/:id Hospital DeleteHospital
+// swagger:route DELETE /v1/hospitals/:id Hospital DeleteHospital
 //
 // Delete the hospital by id.
 //

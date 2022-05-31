@@ -8,7 +8,7 @@ import (
 )
 
 // PutHospitalV1 updates a hospital and returns him/her.
-// swagger:route PUT /v1/hospital/:id Hospital PutHospitalRequest
+// swagger:route PUT /v1/hospitals/:id Hospital PutHospitalRequest
 //
 // Update a hospital.
 //

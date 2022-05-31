@@ -8,7 +8,7 @@ import (
 )
 
 // PostHospitalV1 adds a new hospital and returns him/her.
-// swagger:route POST /v1/hospital Hospital PostHospitalRequest
+// swagger:route POST /v1/hospitals Hospital PostHospitalRequest
 //
 // Add a new hospital.
 //

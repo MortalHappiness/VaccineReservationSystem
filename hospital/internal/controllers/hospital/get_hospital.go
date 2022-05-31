@@ -7,7 +7,7 @@ import (
 )
 
 // GetHospitalV1 returns the hospital information.
-// swagger:route GET /v1/Hospital Hospital GetHospital
+// swagger:route GET /v1/hospitals Hospital GetHospital
 //
 // Get the hospital information.
 //
