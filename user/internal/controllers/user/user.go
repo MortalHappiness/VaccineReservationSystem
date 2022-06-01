@@ -2,6 +2,9 @@
 package user
 
 import (
+	"strings"
+
+	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/env"
 	"github.com/gin-gonic/gin"
 )
@@ -54,6 +57,10 @@ type UserModel struct {
 	// example: A123456789
 	// required: true
 	ID string `json:"id"`
+	// The user healthCardID
+	// example: 000011112222
+	// required: true
+	HealthCardID string `json:health_card_id`
 	// The user birthday
 	// example: 2022/05/23
 	// required: true
@@ -66,4 +73,41 @@ type UserModel struct {
 	// example: 0912345678
 	// required: true
 	Phone string `json:"phone"`
+	// The user vaccines
+	Vaccines []string `json:vaccines`
+}
+
+func GetUser(client *vaccineclient.VaccineClient, nationID string) (*UserModel, error) {
+	row, err := client.GetUser(nationID)
+	if err != nil {
+		return nil, err
+	}
+	if row == nil {
+		return nil, nil
+	}
+	user := &UserModel{
+		ID: nationID,
+	}
+	for _, col := range row["user"] {
+		qualifier := col.Column[strings.IndexByte(col.Column, ':')+1:]
+		switch qualifier {
+		case "name":
+			user.Name = string(col.Value)
+		case "gender":
+			user.Gender = string(col.Value)
+		case "healthCardID":
+			user.HealthCardID = string(col.Value)
+		case "birthday":
+			user.BirthDay = string(col.Value)
+		case "address":
+			user.Address = string(col.Value)
+		case "phone":
+			user.Phone = string(col.Value)
+		case "vaccines":
+			user.Vaccines = strings.Split(string(col.Value), ",")
+		default:
+			// TODO: Handle unknown field error
+		}
+	}
+	return user, nil
 }

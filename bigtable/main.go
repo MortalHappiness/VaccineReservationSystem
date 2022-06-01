@@ -1,5 +1,3 @@
-// Quickstart is a sample program demonstrating use of the Cloud Bigtable client
-// library to read a row from an existing table.
 package main
 
 import (
@@ -9,9 +7,14 @@ import (
 
 	"cloud.google.com/go/bigtable"
 	"github.com/joho/godotenv"
+
+	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
 )
 
+const tableName = "vaccine-reservation-system"
+
 func main() {
+	// Read environment variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Print(".env file not found!")
@@ -27,41 +30,38 @@ func main() {
 		log.Fatal("Environment variable not found: INSTANCE_ID")
 	}
 
+	// Setup tables and column families
 	ctx := context.Background()
 
 	adminClient, err := bigtable.NewAdminClient(ctx, projectID, instanceID)
 	if err != nil {
 		log.Fatalf("Could not create admin client: %v", err)
 	}
-	client, err := bigtable.NewClient(ctx, projectID, instanceID)
-	if err != nil {
-		log.Fatalf("Could not create data operations client: %v", err)
-	}
 
-	adminClient.DeleteTable(ctx, "User")
-	adminClient.DeleteTable(ctx, "Reservation")
-	adminClient.DeleteTable(ctx, "Hospital")
+	adminClient.DeleteTable(ctx, tableName)
+	adminClient.CreateTable(ctx, tableName)
 
-	adminClient.CreateTable(ctx, "User")
-	adminClient.CreateTable(ctx, "Reservation")
-	adminClient.CreateTable(ctx, "Hospital")
+	adminClient.CreateColumnFamily(ctx, tableName, "user")
+	adminClient.CreateColumnFamily(ctx, tableName, "hospital")
+	adminClient.CreateColumnFamily(ctx, tableName, "reservation")
 
-	adminClient.CreateColumnFamily(ctx, "User", "user")
-
-	var mutation *bigtable.Mutation
-
-	userTable := client.Open("User")
-	mutation = bigtable.NewMutation()
-	mutation.Set("user", "name", bigtable.Now(), []byte("Alice"))
-	err = userTable.Apply(ctx, "alice-id", mutation)
-	if err != nil {
-		log.Fatalf("Could not apply row mutation: %v", err)
-	}
-
+	// Close client
 	if err = adminClient.Close(); err != nil {
 		log.Fatalf("Could not close admin client: %v", err)
 	}
-	if err = client.Close(); err != nil {
-		log.Fatalf("Could not close data operations client: %v", err)
-	}
+
+	// Insert data
+	vaccineClient := vaccineclient.NewVaccineClient(projectID, instanceID, tableName)
+
+	vaccineClient.CreateOrUpdateUser("A123456789", "Alice", "000011112222", "Female", "2022/05/23", "No.2, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan", "0912345678", "BNT,AZ")
+
+	// Debug
+	// row, _ := vaccineClient.GetUser("A123456789")
+	// vaccineclient.PrintRow(row)
+	// vaccineClient.CreateOrUpdateUser("A123456789", "Alice1", "", "", "", "", "", "")
+	// row, _ = vaccineClient.GetUser("A123456789")
+	// vaccineclient.PrintRow(row)
+	// vaccineClient.DeleteUser("A123456789")
+	// row, _ = vaccineClient.GetUser("A123456789")
+	// vaccineclient.PrintRow(row)
 }
