@@ -53,14 +53,15 @@ func main() {
 	// Insert data
 	vaccineClient := vaccineclient.NewVaccineClient(projectID, instanceID, tableName)
 
-	vaccineClient.CreateOrUpdateUser("AliceNationID", "Alice", "AliceHealthCardID", "Female", "1970/1/1", "AliceAddress", "AlicePhone", "BNT,AZ")
+	vaccineClient.CreateOrUpdateUser("A123456789", "Alice", "000011112222", "Female", "2022/05/23", "No.2, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan", "0912345678", "BNT,AZ")
 
-	// row, _ := vaccineClient.GetUser("AliceNationID")
+	// Debug
+	// row, _ := vaccineClient.GetUser("A123456789")
 	// vaccineclient.PrintRow(row)
-	// vaccineClient.CreateOrUpdateUser("AliceNationID", "Alice1", "", "", "", "", "", "")
-	// row, _ = vaccineClient.GetUser("AliceNationID")
+	// vaccineClient.CreateOrUpdateUser("A123456789", "Alice1", "", "", "", "", "", "")
+	// row, _ = vaccineClient.GetUser("A123456789")
 	// vaccineclient.PrintRow(row)
-	// vaccineClient.DeleteUser("AliceNationID")
-	// row, _ = vaccineClient.GetUser("AliceNationID")
+	// vaccineClient.DeleteUser("A123456789")
+	// row, _ = vaccineClient.GetUser("A123456789")
 	// vaccineclient.PrintRow(row)
 }

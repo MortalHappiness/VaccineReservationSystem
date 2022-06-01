@@ -3,6 +3,7 @@ package user
 import (
 	"net/http"
 
+	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,13 +17,16 @@ import (
 //   500: InternalServerErrorResponse
 //
 func (u *User) GetUserV1(c *gin.Context) {
-	model := UserModel{
-		Name:     "bob",
-		Gender:   "male",
-		ID:       "A123456789",
-		BirthDay: "2022/05/23",
-		Address:  "No.1, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan",
-		Phone:    "0912345678",
+	// TODO: Read environment variables instead of hard code projectID and instanceID
+	projectID := "my-project"
+	instanceID := "my-instance"
+	tableName := "vaccine-reservation-system"
+	// TODO: Store vaccineClient somewhere to share between functions
+	vaccineClient := vaccineclient.NewVaccineClient(projectID, instanceID, tableName)
+
+	model, err := GetUser(vaccineClient, "A123456789")
+	if err != nil {
+		// TODO: Do error handling
 	}
 	c.JSON(http.StatusOK, model)
 }
