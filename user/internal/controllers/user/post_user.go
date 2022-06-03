@@ -25,6 +25,7 @@ func (u *User) PostUser(c *gin.Context) {
 		_ = c.Error(apierrors.NewBadRequestError(err))
 		return
 	}
+	// TODO: user should return user
 	err = u.vaccineClient.CreateOrUpdateUser(
 		user.NationID,
 		user.Name,
@@ -39,6 +40,8 @@ func (u *User) PostUser(c *gin.Context) {
 		_ = c.Error(apierrors.NewInternalServerError(err))
 		return
 	}
+
+	// TODO: user should be changed to the return value of CreateOrUpdateUser
 	c.JSON(http.StatusOK, user)
 }
 
