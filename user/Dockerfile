@@ -1,8 +1,9 @@
 FROM golang:1.16
-WORKDIR /go/src
+
+# Install packages
+WORKDIR /app
 ADD go.mod go.mod
 RUN ["go", "mod", "tidy"]
-ADD internal internal
-ADD .golangci.yml .golangci.yml
-ADD main.go main.go
+
+ADD . /app/
 ENTRYPOINT ["go", "run", "main.go", "serve"]
