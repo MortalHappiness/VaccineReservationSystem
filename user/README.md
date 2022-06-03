@@ -10,19 +10,33 @@ go mod tidy
 
 ## Run
 
+### Set environment
+```bash
+# bigtable
+export PROJECT_ID=my-project
+export INSTANCE_ID=my-instance
+export TABLE_NAME=vaccine-reservation-system
+# secret
+export SECRET=my-secret
+```
+
 ```bash
 go run main.go serve
 ```
 
 ## Development
 
-### Serve swagger UI
+### Set environment
 
 1. Set the following environment
 
 ```bash
+# serve swagger spec
 export SPEC_ENABLED=true
 export SPEC_FILES=./docs/swagger-ui
+
+# gin log
+export ACCESS_LOG=true
 ```
 
 2. Restart the server

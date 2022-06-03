@@ -21,7 +21,7 @@ import (
 //   500: InternalServerErrorResponse
 //
 func (u *User) PutUser(c *gin.Context) {
-	nationID := c.Param("nation_id")
+	nationID := c.Param("nationID")
 
 	var user UserModel
 	err := c.ShouldBindJSON(&user)
@@ -30,12 +30,17 @@ func (u *User) PutUser(c *gin.Context) {
 		return
 	}
 
-	// TODO: verify nationID in jwt token is the same as this nationID, otherwise return unauthorized
+	// verify user auth
+	err = u.AuthVerify(c, nationID)
+	if err != nil {
+		_ = c.Error(apierrors.NewUnauthorizedError(err))
+		return
+	}
 
 	// verify nationID is the same as the one in the request
 	if nationID != user.NationID {
 		_ = c.Error(apierrors.NewBadRequestError(
-			fmt.Errorf("nation_id is not matched: %s != %s", nationID, user.NationID)))
+			fmt.Errorf("nationID is not matched: %s != %s", nationID, user.NationID)))
 		return
 	}
 

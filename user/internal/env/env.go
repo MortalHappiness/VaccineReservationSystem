@@ -22,6 +22,9 @@ type Environments struct {
 	ProjectID  string `split_words:"true"`
 	InstanceID string `split_words:"true"`
 	TableName  string `split_words:"true"`
+
+	// secret
+	Secret string `split_words:"true"`
 }
 
 var (

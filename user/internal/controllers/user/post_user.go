@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -25,6 +26,17 @@ func (u *User) PostUser(c *gin.Context) {
 		_ = c.Error(apierrors.NewBadRequestError(err))
 		return
 	}
+
+	// nationID and healthCardID is required in POST request
+	if user.NationID == "" {
+		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("nationID is empty")))
+		return
+	}
+	if user.HealthCardID == "" {
+		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("healthCardID is empty")))
+		return
+	}
+
 	// TODO: user should return user
 	err = u.vaccineClient.CreateOrUpdateUser(
 		user.NationID,

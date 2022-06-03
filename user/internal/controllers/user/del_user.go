@@ -9,7 +9,7 @@ import (
 )
 
 // DelUser deletes a user and returns his/hers nation ID.
-// swagger:route DELETE /api/users/:nation_id User DelUserRequest
+// swagger:route DELETE /api/users/:nationID User DelUserRequest
 //
 // Delete a user with his/her nation ID.
 //
@@ -19,9 +19,9 @@ import (
 //   500: InternalServerErrorResponse
 //
 func (u *User) DelUser(c *gin.Context) {
-	nationID := c.Param("nation_id")
+	nationID := c.Param("nationID")
 	if nationID == "" {
-		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("nation_id is empty")))
+		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("nationID is empty")))
 		return
 	}
 

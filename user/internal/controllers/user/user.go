@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// I is interface of authentication.
+// I is interface of user.
 type I interface {
 	GetUserByID(c *gin.Context)
 	PostUser(c *gin.Context)
@@ -39,7 +39,7 @@ func New(opt Options) *User {
 	}
 }
 
-// UserResponse is the response of GetUserV1
+// UserResponse is the response of GetUser/PostUser/PutUser.
 //
 // swagger:response UserResponse
 type UserResponse struct {
@@ -70,7 +70,7 @@ type UserModel struct {
 	// The user healthCardID
 	// example: 000011112222
 	// in: body
-	// required: false
+	// required: true
 	HealthCardID string `json:"healthCardID"`
 	// The user birthday
 	// example: 2022/05/23
@@ -121,4 +121,15 @@ func ConvertRowToUserModel(nationID string, row bigtable.Row) (*UserModel, error
 		}
 	}
 	return user, nil
+}
+
+func (u *User) AuthVerify(c *gin.Context, givenNationID string) error {
+	nationID, exists := c.Get("nationID")
+	if !exists {
+		return fmt.Errorf("nationID not found in context")
+	}
+	if givenNationID != nationID {
+		return fmt.Errorf("nationID not match")
+	}
+	return nil
 }

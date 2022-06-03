@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
+	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/session"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/user"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/env"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/middlewares"
@@ -12,7 +13,9 @@ import (
 type Options struct {
 	Env                      env.Environments
 	errorCollectorMiddleware gin.HandlerFunc
+	authMiddleware           gin.HandlerFunc
 	userController           user.I
+	sessionController        session.I
 }
 
 // NewOptions returns Options based on environment variables.
@@ -25,9 +28,16 @@ func NewOptions(env env.Environments) (*Options, error) {
 		VaccineClient: vaccineClient,
 	}
 
+	sessionOpt := session.Options{
+		Env:           env,
+		VaccineClient: vaccineClient,
+	}
+
 	return &Options{
 		Env:                      env,
 		errorCollectorMiddleware: middlewares.NewErrorCollectorMiddleware(),
+		authMiddleware:           middlewares.NewAuthMiddleware(env),
 		userController:           user.New(userOpt),
+		sessionController:        session.New(sessionOpt),
 	}, nil
 }
