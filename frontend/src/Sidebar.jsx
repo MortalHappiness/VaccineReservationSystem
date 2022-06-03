@@ -17,52 +17,53 @@ import { Link } from "react-router-dom";
 
 function Sidebar() {
   return (
-    <>
-      <Drawer
-        sx={{
+    <Drawer
+      sx={{
+        width: 240,
+        flexShrink: 0,
+        "& .MuiDrawer-paper": {
           width: 240,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: 240,
-            boxSizing: "border-box",
-          },
-        }}
-        variant="permanent"
-        anchor="left"
-      >
-        <Toolbar style={{ background: "primary" }}>
-          <Typography component={Link} to="/">首頁</Typography>
-        </Toolbar>
-        {/* <Divider /> */}
-        <List>
-          <ListItem key="個人資料" disablePadding component={Link} to="/user">
-            <ListItemButton>
-              <ListItemText primary="個人資料" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem
-            key="疫苗預約"
-            disablePadding
-            component={Link}
-            to="/reservation"
-          >
-            <ListItemButton>
-              <ListItemText primary="疫苗預約" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem
-            key="預約查詢與取消"
-            disablePadding
-            component={Link}
-            to="/status"
-          >
-            <ListItemButton>
-              <ListItemText primary="預約查詢與取消" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <Divider />
-        {/* <List>
+          boxSizing: "border-box",
+        },
+      }}
+      variant="permanent"
+      anchor="left"
+    >
+      <Toolbar style={{ background: "primary" }}>
+        <Typography component={Link} to="/">
+          首頁
+        </Typography>
+      </Toolbar>
+      {/* <Divider /> */}
+      <List>
+        <ListItem key="個人資料" disablePadding component={Link} to="/user">
+          <ListItemButton>
+            <ListItemText primary="個人資料" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          key="疫苗預約"
+          disablePadding
+          component={Link}
+          to="/reservation"
+        >
+          <ListItemButton>
+            <ListItemText primary="疫苗預約" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          key="預約查詢與取消"
+          disablePadding
+          component={Link}
+          to="/status"
+        >
+          <ListItemButton>
+            <ListItemText primary="預約查詢與取消" />
+          </ListItemButton>
+        </ListItem>
+      </List>
+      <Divider />
+      {/* <List>
         {["All mail", "Trash", "Spam"].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
@@ -74,8 +75,7 @@ function Sidebar() {
           </ListItem>
         ))}
         </List>*/}
-      </Drawer>
-    </>
+    </Drawer>
   );
 }
 
