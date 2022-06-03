@@ -3,7 +3,6 @@ package vaccineclient
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 
 	"cloud.google.com/go/bigtable"
@@ -80,14 +79,14 @@ func (vaccineClient *VaccineClient) GetUser(nationID string) (bigtable.Row, erro
 	ctx := context.Background()
 	client, err := bigtable.NewClient(ctx, vaccineClient.projectID, vaccineClient.instanceID)
 	if err != nil {
-		return nil, fmt.Errorf("bigtable.NewClient: %v", err)
+		return nil, fmt.Errorf("bigtable.NewClient: %w", err)
 	}
 	defer client.Close()
 	tbl := client.Open(vaccineClient.tableName)
 	rowkey := "user#" + nationID
 	row, err := tbl.ReadRow(ctx, rowkey, bigtable.RowFilter(bigtable.LatestNFilter(1)))
 	if err != nil {
-		log.Fatalf("Could not read row with key %s: %v", rowkey, err)
+		return nil, fmt.Errorf("Could not read row with key %s: %w", rowkey, err)
 	}
 
 	if len(row) == 0 {
