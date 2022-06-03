@@ -1,6 +1,5 @@
 # VaccineReservationSystem
 
-
 ## Deploy development environment
 
 1. Deploy backend and bigtable
@@ -16,3 +15,8 @@ export BIGTABLE_EMULATOR_HOST=localhost:8086
 ```
 
 Follow the rest instructions in [bigtable - Setup local bigtable emulator](/bigtable/README.md)
+
+3. See user spec
+
+See `User` and `Session` api spec at `http://localhost:7712/.spec/`
+

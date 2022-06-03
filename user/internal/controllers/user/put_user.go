@@ -10,7 +10,7 @@ import (
 )
 
 // PutUser updates a user and returns him/her.
-// swagger:route PUT /api/users User PutUserRequest
+// swagger:route PUT /api/users/:nationID User PutUserRequest
 //
 // Update a user.
 //

@@ -189,27 +189,6 @@ paths:
       summary: Add a new user.
       tags:
       - User
-    put:
-      operationId: PutUserRequest
-      parameters:
-      - description: The user info
-        in: body
-        name: user
-        schema:
-          $ref: '#/definitions/UserModel'
-        x-go-name: User
-      responses:
-        "200":
-          $ref: '#/responses/UserResponse'
-        "400":
-          $ref: '#/responses/BadRequestErrorResponse'
-        "401":
-          $ref: '#/responses/UnauthorizedErrorResponse'
-        "500":
-          $ref: '#/responses/InternalServerErrorResponse'
-      summary: Update a user.
-      tags:
-      - User
   /api/users/:nationID:
     delete:
       operationId: DelUserRequest
@@ -245,6 +224,27 @@ paths:
         "500":
           $ref: '#/responses/InternalServerErrorResponse'
       summary: Get the user information.
+      tags:
+      - User
+    put:
+      operationId: PutUserRequest
+      parameters:
+      - description: The user info
+        in: body
+        name: user
+        schema:
+          $ref: '#/definitions/UserModel'
+        x-go-name: User
+      responses:
+        "200":
+          $ref: '#/responses/UserResponse'
+        "400":
+          $ref: '#/responses/BadRequestErrorResponse'
+        "401":
+          $ref: '#/responses/UnauthorizedErrorResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Update a user.
       tags:
       - User
 produces:

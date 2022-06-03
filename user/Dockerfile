@@ -6,4 +6,8 @@ ADD go.mod go.mod
 RUN ["go", "mod", "tidy"]
 
 ADD . /app/
-ENTRYPOINT ["go", "run", "main.go", "serve"]
+
+RUN go build -o worker
+
+ENTRYPOINT ["/app/worker"]
+CMD ["serve"]
