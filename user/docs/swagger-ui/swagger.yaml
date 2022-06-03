@@ -2,6 +2,41 @@ basePath: /
 consumes:
 - application/json
 definitions:
+  APIError:
+    properties:
+      error:
+        description: |-
+          The status error message.
+          in: body
+        type: string
+        x-go-name: ErrMsg
+      message:
+        description: |-
+          The error message.
+          in: body
+        type: string
+        x-go-name: Message
+      status:
+        description: |-
+          The HTTP status code.
+          in: body
+        format: int64
+        type: integer
+        x-go-name: Status
+      timestamp:
+        description: |-
+          The timestamp of the error.
+          in: body
+        type: string
+        x-go-name: Timestamp
+    required:
+    - timestamp
+    - status
+    - error
+    - message
+    title: APIError is the error response for the API.
+    type: object
+    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/user/internal/apierrors
   UserModel:
     description: UserModel is the body format of UserResponse
     properties:
@@ -10,7 +45,7 @@ definitions:
         example: No.1, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan
         type: string
         x-go-name: Address
-      birthday:
+      birthDay:
         description: The user birthday
         example: 2022/05/23
         type: string
@@ -20,28 +55,35 @@ definitions:
         example: male
         type: string
         x-go-name: Gender
-      id:
-        description: The user ID
-        example: A123456789
+      healthCardID:
+        description: The user healthCardID
+        example: "000011112222"
         type: string
-        x-go-name: ID
+        x-go-name: HealthCardID
       name:
         description: The user name
         example: bob
         type: string
         x-go-name: Name
+      nationID:
+        description: The user nation ID
+        example: A123456789
+        type: string
+        x-go-name: NationID
       phone:
         description: The user phone number
         example: "0912345678"
         type: string
         x-go-name: Phone
+      vaccines:
+        description: The user inoculated vaccines
+        example: '[AZ, BNT]'
+        items:
+          type: string
+        type: array
+        x-go-name: Vaccines
     required:
-    - name
-    - gender
-    - id
-    - birthday
-    - address
-    - phone
+    - nationID
     type: object
     x-go-package: github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/user
 host: localhost:7712
@@ -63,17 +105,7 @@ paths:
       summary: Get Server API Specification
       tags:
       - Development
-  /v1/user:
-    get:
-      operationId: GetUser
-      responses:
-        "200":
-          $ref: '#/responses/UserResponse'
-        "500":
-          $ref: '#/responses/InternalServerErrorResponse'
-      summary: Get the user information.
-      tags:
-      - User
+  /api/users:
     post:
       operationId: PostUserRequest
       parameters:
@@ -93,9 +125,36 @@ paths:
       summary: Add a new user.
       tags:
       - User
+  /api/users/:nation_id:
+    get:
+      operationId: GetUser
+      responses:
+        "200":
+          $ref: '#/responses/UserResponse'
+        "400":
+          $ref: '#/responses/BadRequestErrorResponse'
+        "404":
+          $ref: '#/responses/NotFoundErrorResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Get the user information.
+      tags:
+      - User
 produces:
 - application/json
 responses:
+  BadRequestErrorResponse:
+    description: BadRequestErrorResponse is the response of bad request error.
+    schema:
+      $ref: '#/definitions/APIError'
+  InternalServerErrorResponse:
+    description: InternalServerErrorResponse is the response of internal server error.
+    schema:
+      $ref: '#/definitions/APIError'
+  NotFoundErrorResponse:
+    description: NotFoundErrorResponse is the response of not found error.
+    schema:
+      $ref: '#/definitions/APIError'
   UserResponse:
     description: UserResponse is the response of GetUserV1
     schema:

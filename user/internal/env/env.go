@@ -17,6 +17,11 @@ type Environments struct {
 	SpecEnabled bool   `default:"false" split_words:"true"`
 	SpecFiles   string `default:"./swagger-ui" split_words:"true"`
 	LogLevel    string `default:"warn" split_words:"true"`
+
+	// bigtable
+	ProjectID  string `split_words:"true"`
+	InstanceID string `split_words:"true"`
+	TableName  string `split_words:"true"`
 }
 
 var (

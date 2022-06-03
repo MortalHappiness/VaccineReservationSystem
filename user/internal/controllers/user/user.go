@@ -2,8 +2,10 @@
 package user
 
 import (
+	"fmt"
 	"strings"
 
+	"cloud.google.com/go/bigtable"
 	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/env"
 	"github.com/gin-gonic/gin"
@@ -11,24 +13,27 @@ import (
 
 // I is interface of authentication.
 type I interface {
-	GetUserV1(c *gin.Context)
-	PostUserV1(c *gin.Context)
+	GetUserByID(c *gin.Context)
+	PostUser(c *gin.Context)
 }
 
 // User handles all info-related requests.
 type User struct {
-	env env.Environments
+	env           env.Environments
+	vaccineClient *vaccineclient.VaccineClient
 }
 
 // Options provides interface to change behavior of User.
 type Options struct {
-	Env env.Environments
+	Env           env.Environments
+	VaccineClient *vaccineclient.VaccineClient
 }
 
 // New returns default instance of User.
 func New(opt Options) *User {
 	return &User{
-		env: opt.Env,
+		env:           opt.Env,
+		vaccineClient: opt.VaccineClient,
 	}
 }
 
@@ -46,47 +51,51 @@ type UserResponse struct {
 // swagger:model UserModel
 type UserModel struct {
 	// The user name
-	// required: true
 	// example: bob
+	// in: body
+	// required: false
 	Name string `json:"name"`
 	// The user gender
 	// example: male
-	// required: true
+	// in: body
+	// required: false
 	Gender string `json:"gender"`
-	// The user ID
+	// The user nation ID
 	// example: A123456789
+	// in: body
 	// required: true
-	ID string `json:"id"`
+	NationID string `json:"nationID" binding:"required"`
 	// The user healthCardID
 	// example: 000011112222
-	// required: true
-	HealthCardID string `json:health_card_id`
+	// in: body
+	// required: false
+	HealthCardID string `json:"healthCardID"`
 	// The user birthday
 	// example: 2022/05/23
-	// required: true
-	BirthDay string `json:"birthday"`
+	// in: body
+	// required: false
+	BirthDay string `json:"birthDay"`
 	// The user address
 	// example: No.1, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan
-	// required: true
+	// in: body
+	// required: false
 	Address string `json:"address"`
 	// The user phone number
 	// example: 0912345678
-	// required: true
+	// in: body
+	// required: false
 	Phone string `json:"phone"`
-	// The user vaccines
-	Vaccines []string `json:vaccines`
+	// The user inoculated vaccines
+	// example: [AZ, BNT]
+	// in: body
+	// required: false
+	Vaccines []string `json:"vaccines"`
 }
 
-func GetUser(client *vaccineclient.VaccineClient, nationID string) (*UserModel, error) {
-	row, err := client.GetUser(nationID)
-	if err != nil {
-		return nil, err
-	}
-	if row == nil {
-		return nil, nil
-	}
+// ConvertRowToUserModel converts bigtable.Row to *UserModel with given nationID.
+func ConvertRowToUserModel(nationID string, row bigtable.Row) (*UserModel, error) {
 	user := &UserModel{
-		ID: nationID,
+		NationID: nationID,
 	}
 	for _, col := range row["user"] {
 		qualifier := col.Column[strings.IndexByte(col.Column, ':')+1:]
@@ -106,7 +115,7 @@ func GetUser(client *vaccineclient.VaccineClient, nationID string) (*UserModel, 
 		case "vaccines":
 			user.Vaccines = strings.Split(string(col.Value), ",")
 		default:
-			// TODO: Handle unknown field error
+			return nil, fmt.Errorf("unknown qualifier: %s", qualifier)
 		}
 	}
 	return user, nil

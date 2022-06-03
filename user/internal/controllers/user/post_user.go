@@ -1,14 +1,15 @@
 package user
 
 import (
-	"fmt"
 	"net/http"
+	"strings"
 
+	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/apierrors"
 	"github.com/gin-gonic/gin"
 )
 
-// PostUserV1 adds a new user and returns him/her.
-// swagger:route POST /v1/user User PostUserRequest
+// PostUser adds a new user and returns him/her.
+// swagger:route POST /api/users User PostUserRequest
 //
 // Add a new user.
 //
@@ -17,14 +18,28 @@ import (
 //   400: BadRequestErrorResponse
 //   500: InternalServerErrorResponse
 //
-func (u *User) PostUserV1(c *gin.Context) {
-	var model UserModel
-	err := c.ShouldBindJSON(&model)
+func (u *User) PostUser(c *gin.Context) {
+	var user UserModel
+	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		_ = c.Error(fmt.Errorf("post user request: %w", err))
+		_ = c.Error(apierrors.NewBadRequestError(err))
 		return
 	}
-	c.JSON(http.StatusOK, model)
+	err = u.vaccineClient.CreateOrUpdateUser(
+		user.NationID,
+		user.Name,
+		user.HealthCardID,
+		user.Gender,
+		user.BirthDay,
+		user.Address,
+		user.Phone,
+		strings.Join(user.Vaccines, ","),
+	)
+	if err != nil {
+		_ = c.Error(apierrors.NewInternalServerError(err))
+		return
+	}
+	c.JSON(http.StatusOK, user)
 }
 
 // PostUserRequest is the request of PostUserV1
