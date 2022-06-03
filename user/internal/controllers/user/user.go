@@ -15,6 +15,8 @@ import (
 type I interface {
 	GetUserByID(c *gin.Context)
 	PostUser(c *gin.Context)
+	PutUser(c *gin.Context)
+	DelUser(c *gin.Context)
 }
 
 // User handles all info-related requests.

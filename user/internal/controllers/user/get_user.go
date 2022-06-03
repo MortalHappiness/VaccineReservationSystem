@@ -16,11 +16,14 @@ import (
 // Responses:
 //   200: UserResponse
 //   400: BadRequestErrorResponse
+//   401: UnauthorizedErrorResponse
 //   404: NotFoundErrorResponse
 //   500: InternalServerErrorResponse
 //
 func (u *User) GetUserByID(c *gin.Context) {
 	nationID := c.Param("nation_id")
+	// TODO: verify nationID in jwt token is the same as this nationID, otherwise return unauthorized
+
 	row, err := u.vaccineClient.GetUser(nationID)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to get user: %w", err)))

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -8,23 +9,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// PostUser adds a new user and returns him/her.
-// swagger:route POST /api/users User PostUserRequest
+// PutUser updates a user and returns him/her.
+// swagger:route PUT /api/users User PutUserRequest
 //
-// Add a new user.
+// Update a user.
 //
 // Responses:
 //   200: UserResponse
 //   400: BadRequestErrorResponse
+//   401: UnauthorizedErrorResponse
 //   500: InternalServerErrorResponse
 //
-func (u *User) PostUser(c *gin.Context) {
+func (u *User) PutUser(c *gin.Context) {
+	nationID := c.Param("nation_id")
+
 	var user UserModel
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		_ = c.Error(apierrors.NewBadRequestError(err))
 		return
 	}
+
+	// TODO: verify nationID in jwt token is the same as this nationID, otherwise return unauthorized
+
+	// verify nationID is the same as the one in the request
+	if nationID != user.NationID {
+		_ = c.Error(apierrors.NewBadRequestError(
+			fmt.Errorf("nation_id is not matched: %s != %s", nationID, user.NationID)))
+		return
+	}
+
 	// TODO: user should return user
 	err = u.vaccineClient.CreateOrUpdateUser(
 		user.NationID,
@@ -45,10 +59,10 @@ func (u *User) PostUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// PostUserRequest is the request of PostUser
+// PutUserRequest is the request of PutUser
 //
-// swagger:parameters PostUserRequest
-type PostUserRequest struct {
+// swagger:parameters PutUserRequest
+type PutUserRequest struct {
 	// The user info
 	// in: body
 	User *UserModel `json:"user"`

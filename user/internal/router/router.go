@@ -19,6 +19,8 @@ func MakeRouter(opt *Options) *gin.Engine {
 		api.Use(opt.errorCollectorMiddleware)
 		api.GET("/users/:nation_id", opt.userController.GetUserByID)
 		api.POST("/users", opt.userController.PostUser)
+		api.PUT("/users/:nation_id", opt.userController.PutUser)
+		api.DELETE("/users/:nation_id", opt.userController.DelUser)
 	}
 	// API Spec Swagger UI
 	{
