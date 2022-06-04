@@ -1,106 +1,209 @@
 basePath: /
 consumes:
-  - application/json
+- application/json
 definitions:
-  UserModel:
-    description: UserModel is the body format of UserResponse
+  APIError:
+    properties:
+      error:
+        description: |-
+          The status error message.
+          in: body
+        type: string
+        x-go-name: ErrMsg
+      message:
+        description: |-
+          The error message.
+          in: body
+        type: string
+        x-go-name: Message
+      status:
+        description: |-
+          The HTTP status code.
+          in: body
+        format: int64
+        type: integer
+        x-go-name: Status
+      timestamp:
+        description: |-
+          The timestamp of the error.
+          in: body
+        type: string
+        x-go-name: Timestamp
+    required:
+    - timestamp
+    - status
+    - error
+    - message
+    title: APIError is the error response for the API.
+    type: object
+    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors
+  HospitalModel:
+    description: Hospital model is the body format of HospitalResponse
     properties:
       address:
-        description: The user address
+        description: The hospital address
         example: No.1, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan
         type: string
         x-go-name: Address
-      birthday:
-        description: The user birthday
-        example: 2022/05/23
+      county:
+        description: The hospital County
+        example: New Taipei City
         type: string
-        x-go-name: BirthDay
-      gender:
-        description: The user gender
-        example: male
-        type: string
-        x-go-name: Gender
+        x-go-name: County
       id:
-        description: The user ID
-        example: A123456789
+        description: The hospital id
+        example: "0001"
         type: string
         x-go-name: ID
       name:
-        description: The user name
-        example: bob
+        description: The hospital name
+        example: Taipei City Hospital Heping Fuyou Branch
         type: string
         x-go-name: Name
-      phone:
-        description: The user phone number
-        example: "0912345678"
+      township:
+        description: The hospital Township
+        example: Banqiao
         type: string
-        x-go-name: Phone
+        x-go-name: Township
+      vaccineCnt:
+        additionalProperties:
+          format: int64
+          type: integer
+        description: The hospital vaccines
+        example:
+          AZ: 100
+          BNT: 200
+        type: object
+        x-go-name: VaccineCnt
     required:
-      - name
-      - gender
-      - id
-      - birthday
-      - address
-      - phone
+    - id
+    - name
+    - county
+    - township
+    - address
+    - vaccineCnt
     type: object
-    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/hospital/internal/controllers/user
+    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/go-utils/models
 host: localhost:7712
 info:
   description: Documentation of Worker.
   title: Worker.
-  version: "%VERSION_TO_BE_REPLACED_BY_GITRUNNER%"
+  version: '%VERSION_TO_BE_REPLACED_BY_GITRUNNER%'
 paths:
   /.spec:
     get:
-      description:
-        GetSpec returns API Spec. This API is for testing & development
+      description: GetSpec returns API Spec. This API is for testing & development
         only.
       operationId: GetSpec
       responses:
         "301":
-          $ref: "#/responses/emptyResponse"
+          $ref: '#/responses/emptyResponse'
         "404":
-          $ref: "#/responses/genericError"
+          $ref: '#/responses/genericError'
       summary: Get Server API Specification
       tags:
-        - Development
-  /v1/user:
+      - Development
+  /api/hospitals:
     get:
-      operationId: GetUser
-      responses:
-        "200":
-          $ref: "#/responses/UserResponse"
-        "500":
-          $ref: "#/responses/InternalServerErrorResponse"
-      summary: Get the user information.
-      tags:
-        - User
-    post:
-      operationId: PostUserRequest
+      operationId: GetHospital
       parameters:
-        - description: The user info
-          in: body
-          name: user
-          schema:
-            $ref: "#/definitions/UserModel"
-          x-go-name: User
+      - description: the county of the hospital
+        in: query
+        name: county
+        required: true
+        type: string
+      - description: the township of the hospital
+        in: query
+        name: township
+        required: true
+        type: string
       responses:
         "200":
-          $ref: "#/responses/UserResponse"
+          $ref: '#/responses/HospitalResponse'
         "400":
-          $ref: "#/responses/BadRequestErrorResponse"
+          $ref: '#/responses/BadRequestErrorResponse'
+        "404":
+          $ref: '#/responses/NotFoundErrorResponse'
         "500":
-          $ref: "#/responses/InternalServerErrorResponse"
-      summary: Add a new user.
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Get the hospital information.
       tags:
-        - User
+      - Hospital
+    post:
+      operationId: PostHospitalRequest
+      parameters:
+      - description: The hospital info
+        in: body
+        name: hospital
+        schema:
+          $ref: '#/definitions/HospitalModel'
+        x-go-name: Hospital
+      responses:
+        "200":
+          $ref: '#/responses/HospitalResponse'
+        "400":
+          $ref: '#/responses/BadRequestErrorResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Add a new hospital.
+      tags:
+      - Hospital
+  /api/hospitals/:hospitalID:
+    delete:
+      operationId: DeleteHospital
+      responses:
+        "200":
+          $ref: '#/responses/DeleteHospital'
+          description: hospitalID
+        "400":
+          $ref: '#/responses/BadRequestErrorResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Delete the hospital by id.
+      tags:
+      - Hospital
+    put:
+      operationId: PutHospitalRequest
+      parameters:
+      - description: The hospital info
+        in: body
+        name: hospital
+        schema:
+          $ref: '#/definitions/HospitalModel'
+        x-go-name: Hospital
+      responses:
+        "200":
+          $ref: '#/responses/HospitalResponse'
+        "400":
+          $ref: '#/responses/BadRequestErrorResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Update a hospital.
+      tags:
+      - Hospital
 produces:
-  - application/json
+- application/json
 responses:
-  UserResponse:
-    description: UserResponse is the response of GetUserV1
+  BadRequestErrorResponse:
+    description: BadRequestErrorResponse is the response of bad request error.
     schema:
-      $ref: "#/definitions/UserModel"
+      $ref: '#/definitions/APIError'
+  HospitalResponse:
+    description: HospitalResponse is the response of GetHospital
+    schema:
+      $ref: '#/definitions/HospitalModel'
+  InternalServerErrorResponse:
+    description: InternalServerErrorResponse is the response of internal server error.
+    schema:
+      $ref: '#/definitions/APIError'
+  NotFoundErrorResponse:
+    description: NotFoundErrorResponse is the response of not found error.
+    schema:
+      $ref: '#/definitions/APIError'
+  UnauthorizedErrorResponse:
+    description: UnauthorizedErrorResponse is the response of unauthorized error.
+    schema:
+      $ref: '#/definitions/APIError'
   emptyResponse:
     description: EmptyResponse are sent when the HTTP status code is 204.
   genericError:
@@ -115,5 +218,5 @@ responses:
           required: true
         type: string
 schemes:
-  - http
+- http
 swagger: "2.0"

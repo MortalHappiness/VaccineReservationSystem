@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/gin-gonic/gin"
 )
 
-// PutHospitalV1 updates a hospital and returns him/her.
-// swagger:route PUT /v1/hospitals/:id Hospital PutHospitalRequest
+// PutHospital updates a hospital and returns him/her.
+// swagger:route PUT /api/hospitals/:hospitalID Hospital PutHospitalRequest
 //
 // Update a hospital.
 //
@@ -17,24 +19,29 @@ import (
 //   400: BadRequestErrorResponse
 //   500: InternalServerErrorResponse
 //
-func (u *Hospital) PutHospitalV1(c *gin.Context) {
-	var model HospitalModel
-	err := c.ShouldBindJSON(&model)
-	if err != nil {
-		_ = c.Error(fmt.Errorf("put hospital request: %w", err))
+func (u *Hospital) PutHospital(c *gin.Context) {
+	hospitalID := c.Param("hospitalID")
+	if hospitalID == "" {
+		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("hospital id is empty")))
 		return
 	}
-	// id := c.Param("id")
-	// TODO check hospital exists
-	// TODO update
+
+	var model models.HospitalModel
+	err := c.ShouldBindJSON(&model)
+	if err != nil {
+		_ = c.Error(apierrors.NewBadRequestError(err))
+		return
+	}
+	// TODO: update hospital
+
 	c.JSON(http.StatusOK, model)
 }
 
-// PutHospitalRequest is the request of PutHospitalV1
+// PutHospitalRequest is the request of PutHospital
 //
 // swagger:parameters PutHospitalRequest
 type PutHospitalRequest struct {
 	// The hospital info
 	// in: body
-	Hospital *HospitalModel `json:"hospital"`
+	Hospital *models.HospitalModel `json:"hospital"`
 }

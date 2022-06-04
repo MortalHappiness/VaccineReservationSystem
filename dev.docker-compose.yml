@@ -26,6 +26,18 @@ services:
       - SPEC_FILES=./docs/swagger-ui
       - ACCESS_LOG=true
       - BIGTABLE_EMULATOR_HOST=bigtable:8086
+  hospital:
+    build: ./hospital
+    ports:
+      - "7714:7712"
+    environment:
+      - PROJECT_ID=my-project
+      - INSTANCE_ID=my-instance
+      - TABLE_NAME=vaccine-reservation-system
+      - SPEC_ENABLED=true
+      - SPEC_FILES=./docs/swagger-ui
+      - ACCESS_LOG=true
+      - BIGTABLE_EMULATOR_HOST=bigtable:8086
   bigtable:
     image: google/cloud-sdk:latest
     ports:

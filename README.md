@@ -16,7 +16,9 @@ export BIGTABLE_EMULATOR_HOST=localhost:8086
 
 Follow the rest instructions in [bigtable - Setup local bigtable emulator](/bigtable/README.md)
 
-3. See user spec
+3. See spec
 
-See `User` and `Session` api spec at `http://localhost:7712/.spec/`
+- See **User** and **Session** api spec at `http://localhost:7712/.spec/`
+- See **Reservation** api spec at `http://localhost:7713/.spec/`
+- See **Hospital** api spec at `http://localhost:7714/.spec/`
 

@@ -14,14 +14,13 @@ func MakeRouter(opt *Options) *gin.Engine {
 		router = gin.New()
 		router.Use(gin.Recovery())
 	}
-	// exampleMiddleware required group
+	api := router.Group("/api")
 	{
-		// TODO: add apis
-		v1 := router.Group("/v1")
-		v1.GET("/hospitals", opt.hospitalController.GetHospitalV1)
-		v1.POST("/hospitals", opt.hospitalController.PostHospitalV1)
-		v1.PUT("/hospitals/:id", opt.hospitalController.PutHospitalV1)
-		v1.DELETE("/hospitals/:id", opt.hospitalController.DeleteHospitalV1)
+		api.Use(opt.errorCollectorMiddleware)
+		api.GET("/hospitals", opt.hospitalController.GetHospital)
+		api.POST("/hospitals", opt.hospitalController.PostHospital)
+		api.PUT("/hospitals/:hospitalID", opt.hospitalController.PutHospital)
+		api.DELETE("/hospitals/:hospitalID", opt.hospitalController.DeleteHospital)
 	}
 	// API Spec Swagger UI
 	{

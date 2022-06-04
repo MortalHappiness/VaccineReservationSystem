@@ -1,14 +1,15 @@
 package hospital
 
 import (
-	"fmt"
 	"net/http"
 
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/gin-gonic/gin"
 )
 
-// PostHospitalV1 adds a new hospital and returns him/her.
-// swagger:route POST /v1/hospitals Hospital PostHospitalRequest
+// PostHospital adds a new hospital and returns him/her.
+// swagger:route POST /api/hospitals Hospital PostHospitalRequest
 //
 // Add a new hospital.
 //
@@ -17,21 +18,23 @@ import (
 //   400: BadRequestErrorResponse
 //   500: InternalServerErrorResponse
 //
-func (u *Hospital) PostHospitalV1(c *gin.Context) {
-	var model HospitalModel
+func (u *Hospital) PostHospital(c *gin.Context) {
+	var model models.HospitalModel
 	err := c.ShouldBindJSON(&model)
 	if err != nil {
-		_ = c.Error(fmt.Errorf("post hospital request: %w", err))
+		_ = c.Error(apierrors.NewBadRequestError(err))
 		return
 	}
+
+	// TODO: add hospital
 	c.JSON(http.StatusOK, model)
 }
 
-// PostHospitalRequest is the request of PostHospitalV1
+// PostHospitalRequest is the request of PostHospital
 //
 // swagger:parameters PostHospitalRequest
 type PostHospitalRequest struct {
 	// The hospital info
 	// in: body
-	Hospital *HospitalModel `json:"hospital"`
+	Hospital *models.HospitalModel `json:"hospital"`
 }
