@@ -19,9 +19,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 function App() {
+  const [loginOpen, setLoginOpen] = useState(false);
   return (
     <Box sx={{ display: "flex" }}>
-      <NavigationBar />
+      <NavigationBar loginOpen={loginOpen} setLoginOpen={setLoginOpen}/>
       <Sidebar />
 
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

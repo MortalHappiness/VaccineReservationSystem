@@ -432,7 +432,7 @@ export default function ReservationSearch() {
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
-                  <TableRow sx={{height: 20}}>
+                  <TableRow sx={{ height: 20 }}>
                     <TableCell>醫療院所名稱</TableCell>
                     <TableCell align="right">疫苗種類</TableCell>
                     <TableCell align="right">剩餘劑數</TableCell>

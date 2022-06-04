@@ -6,8 +6,9 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import Login from "./Pages/Login";
 
-export default function NavigationBar() {
+export default function NavigationBar(props) {
   return (
     // <Box sx={{ flexGrow: 1 }}>
     <AppBar position="fixed">
@@ -24,7 +25,8 @@ export default function NavigationBar() {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           疫苗系統
         </Typography>
-        <Button color="inherit">登入</Button>
+        <Button color="inherit" onClick={()=>props.setLoginOpen(true)}>登入</Button>
+        <Login open={props.loginOpen} setLoginOpen={props.setLoginOpen}/>
       </Toolbar>
     </AppBar>
     // </Box>
