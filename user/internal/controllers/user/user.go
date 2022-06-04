@@ -7,6 +7,7 @@ import (
 
 	"cloud.google.com/go/bigtable"
 	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/env"
 	"github.com/gin-gonic/gin"
 )
@@ -45,58 +46,12 @@ func New(opt Options) *User {
 type UserResponse struct {
 	// The user info
 	// in: body
-	User *UserModel `json:"user"`
-}
-
-// UserModel is the body format of UserResponse
-//
-// swagger:model UserModel
-type UserModel struct {
-	// The user name
-	// example: bob
-	// in: body
-	// required: false
-	Name string `json:"name"`
-	// The user gender
-	// example: male
-	// in: body
-	// required: false
-	Gender string `json:"gender"`
-	// The user nation ID
-	// example: A123456789
-	// in: body
-	// required: true
-	NationID string `json:"nationID" binding:"required"`
-	// The user healthCardID
-	// example: 000011112222
-	// in: body
-	// required: true
-	HealthCardID string `json:"healthCardID"`
-	// The user birthday
-	// example: 2022/05/23
-	// in: body
-	// required: false
-	BirthDay string `json:"birthDay"`
-	// The user address
-	// example: No.1, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan
-	// in: body
-	// required: false
-	Address string `json:"address"`
-	// The user phone number
-	// example: 0912345678
-	// in: body
-	// required: false
-	Phone string `json:"phone"`
-	// The user inoculated vaccines
-	// example: [AZ, BNT]
-	// in: body
-	// required: false
-	Vaccines []string `json:"vaccines"`
+	User *models.UserModel `json:"user"`
 }
 
 // ConvertRowToUserModel converts bigtable.Row to *UserModel with given nationID.
-func ConvertRowToUserModel(nationID string, row bigtable.Row) (*UserModel, error) {
-	user := &UserModel{
+func ConvertRowToUserModel(nationID string, row bigtable.Row) (*models.UserModel, error) {
+	user := &models.UserModel{
 		NationID: nationID,
 	}
 	for _, col := range row["user"] {
@@ -123,7 +78,7 @@ func ConvertRowToUserModel(nationID string, row bigtable.Row) (*UserModel, error
 	return user, nil
 }
 
-func (u *User) AuthVerify(c *gin.Context, givenNationID string) error {
+func AuthVerify(c *gin.Context, givenNationID string) error {
 	nationID, exists := c.Get("nationID")
 	if !exists {
 		return fmt.Errorf("nationID not found in context")

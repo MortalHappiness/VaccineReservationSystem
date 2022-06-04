@@ -36,7 +36,7 @@ definitions:
     - message
     title: APIError is the error response for the API.
     type: object
-    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/user/internal/apierrors
+    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors
   PostSessionRequestModel:
     properties:
       healthCardID:
@@ -104,7 +104,7 @@ definitions:
     - nationID
     - healthCardID
     type: object
-    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/user
+    x-go-package: github.com/MortalHappiness/VaccineReservationSystem/go-utils/models
 host: localhost:7712
 info:
   description: Documentation of Worker.

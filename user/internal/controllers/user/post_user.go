@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,7 +21,7 @@ import (
 //   500: InternalServerErrorResponse
 //
 func (u *User) PostUser(c *gin.Context) {
-	var user UserModel
+	var user models.UserModel
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		_ = c.Error(apierrors.NewBadRequestError(err))
@@ -63,5 +64,5 @@ func (u *User) PostUser(c *gin.Context) {
 type PostUserRequest struct {
 	// The user info
 	// in: body
-	User *UserModel `json:"user"`
+	User *models.UserModel `json:"user"`
 }

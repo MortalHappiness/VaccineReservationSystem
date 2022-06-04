@@ -2,10 +2,10 @@ package router
 
 import (
 	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/middlewares"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/session"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/user"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/env"
-	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,7 +36,7 @@ func NewOptions(env env.Environments) (*Options, error) {
 	return &Options{
 		Env:                      env,
 		errorCollectorMiddleware: middlewares.NewErrorCollectorMiddleware(),
-		authMiddleware:           middlewares.NewAuthMiddleware(env),
+		authMiddleware:           middlewares.NewAuthMiddleware(env.Secret),
 		userController:           user.New(userOpt),
 		sessionController:        session.New(sessionOpt),
 	}, nil

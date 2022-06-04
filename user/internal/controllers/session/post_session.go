@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/jwt"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/user"
-	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/jwt"
 	"github.com/gin-gonic/gin"
 )
 

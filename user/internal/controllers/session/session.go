@@ -2,7 +2,7 @@ package session
 
 import (
 	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
-	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/controllers/user"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/env"
 	"github.com/gin-gonic/gin"
 )
@@ -40,5 +40,5 @@ func New(opt Options) *Session {
 type SessionResponse struct {
 	// The session info
 	// in: body
-	User *user.UserModel `json:"user"`
+	User *models.UserModel `json:"user"`
 }

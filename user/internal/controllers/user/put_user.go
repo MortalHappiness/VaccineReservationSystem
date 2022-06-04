@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,7 +24,7 @@ import (
 func (u *User) PutUser(c *gin.Context) {
 	nationID := c.Param("nationID")
 
-	var user UserModel
+	var user models.UserModel
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		_ = c.Error(apierrors.NewBadRequestError(err))
@@ -31,7 +32,7 @@ func (u *User) PutUser(c *gin.Context) {
 	}
 
 	// verify user auth
-	err = u.AuthVerify(c, nationID)
+	err = AuthVerify(c, nationID)
 	if err != nil {
 		_ = c.Error(apierrors.NewUnauthorizedError(err))
 		return
@@ -70,5 +71,5 @@ func (u *User) PutUser(c *gin.Context) {
 type PutUserRequest struct {
 	// The user info
 	// in: body
-	User *UserModel `json:"user"`
+	User *models.UserModel `json:"user"`
 }

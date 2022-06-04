@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
 	"github.com/gin-gonic/gin"
 )
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,7 +24,7 @@ func (u *User) GetUserByID(c *gin.Context) {
 	nationID := c.Param("nationID")
 
 	// verify user auth
-	err := u.AuthVerify(c, nationID)
+	err := AuthVerify(c, nationID)
 	if err != nil {
 		_ = c.Error(apierrors.NewUnauthorizedError(err))
 		return
