@@ -40,7 +40,7 @@ type UserModel struct {
 	// required: false
 	Phone string `json:"phone"`
 	// The user inoculated vaccines
-	// example: [AZ, BNT]
+	// example: ["AZ", "BNT"]
 	// in: body
 	// required: false
 	Vaccines []string `json:"vaccines"`
