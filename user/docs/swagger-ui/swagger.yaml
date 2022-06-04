@@ -95,7 +95,9 @@ definitions:
         x-go-name: Phone
       vaccines:
         description: The user inoculated vaccines
-        example: '[AZ, BNT]'
+        example:
+        - AZ
+        - BNT
         items:
           type: string
         type: array
@@ -192,17 +194,10 @@ paths:
   /api/users/:nationID:
     delete:
       operationId: DelUserRequest
-      parameters:
-      - description: The user info
-        example: '"A123456789"'
-        in: body
-        name: nationID
-        schema:
-          type: string
-        x-go-name: NationID
       responses:
         "200":
-          $ref: '#/responses/UserResponse'
+          $ref: '#/responses/DeleteUserResponse'
+          description: NationID
         "400":
           $ref: '#/responses/BadRequestErrorResponse'
         "500":

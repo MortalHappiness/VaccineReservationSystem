@@ -14,7 +14,7 @@ import (
 // Delete a user with his/her nation ID.
 //
 // Responses:
-//   200: UserResponse
+//   200: DeleteUserResponse NationID
 //   400: BadRequestErrorResponse
 //   500: InternalServerErrorResponse
 //
@@ -32,14 +32,4 @@ func (u *User) DelUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, nationID)
-}
-
-// DelUserRequest is the request of DelUser
-//
-// swagger:parameters DelUserRequest
-type DelUserRequest struct {
-	// The user info
-	// in: body
-	// example: "A123456789"
-	NationID string `json:"nationID"`
 }
