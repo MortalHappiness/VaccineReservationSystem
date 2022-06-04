@@ -1,37 +1,49 @@
 package reservation
 
 import (
-	"fmt"
 	"net/http"
 
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/gin-gonic/gin"
 )
 
-// PostReservationV1 adds a new reservation and returns him/her.
-// swagger:route POST /v1/reservations Reservation PostReservationRequest
+// PostReservation adds a new reservation and returns him/her.
+// swagger:route POST /api/reservations/users/:nationID Reservation PostReservationRequest
 //
 // Add a new reservation.
 //
 // Responses:
 //   200: ReservationResponse
 //   400: BadRequestErrorResponse
+//   401: UnauthorizedErrorResponse
 //   500: InternalServerErrorResponse
 //
-func (u *Reservation) PostReservationV1(c *gin.Context) {
-	var model ReservationModel
-	err := c.ShouldBindJSON(&model)
+func (u *Reservation) PostReservation(c *gin.Context) {
+	nationID := c.Param("nationID")
+	err := AuthVerify(c, nationID)
 	if err != nil {
-		_ = c.Error(fmt.Errorf("post reservation request: %w", err))
+		_ = c.Error(apierrors.NewUnauthorizedError(err))
 		return
 	}
+
+	var model models.ReservationModel
+	err = c.ShouldBindJSON(&model)
+	if err != nil {
+		_ = c.Error(apierrors.NewBadRequestError(err))
+		return
+	}
+
+	// TODO: add reservation information to bigtable
+
 	c.JSON(http.StatusOK, model)
 }
 
-// PostReservationRequest is the request of PostReservationV1
+// PostReservationRequest is the request of PostReservation
 //
 // swagger:parameters PostReservationRequest
 type PostReservationRequest struct {
 	// The reservation info
 	// in: body
-	Reservation *ReservationModel `json:"reservation"`
+	Reservation *models.ReservationModel `json:"reservation"`
 }

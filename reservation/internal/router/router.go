@@ -15,12 +15,13 @@ func MakeRouter(opt *Options) *gin.Engine {
 		router.Use(gin.Recovery())
 	}
 	// exampleMiddleware required group
+	api := router.Group("/api")
 	{
-		// TODO: add apis
-		v1 := router.Group("/v1")
-		v1.GET("/reservations", opt.reservationController.GetReservationV1)
-		v1.POST("/reservations", opt.reservationController.PostReservationV1)
-		v1.DELETE("/reservations/:id", opt.reservationController.DeleteReservationV1)
+		api.Use(opt.errorCollectorMiddleware)
+		api.Use(opt.authMiddleware)
+		api.GET("/reservations/users/:nationID", opt.reservationController.GetReservation)
+		api.POST("/reservations/users/:nationID", opt.reservationController.PostReservation)
+		api.DELETE("/reservations/users/:nationID/:reservationID", opt.reservationController.DeleteReservation)
 	}
 	// API Spec Swagger UI
 	{

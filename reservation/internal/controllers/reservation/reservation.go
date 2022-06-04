@@ -2,69 +2,57 @@
 package reservation
 
 import (
+	"fmt"
+
+	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/MortalHappiness/VaccineReservationSystem/reservation/internal/env"
 	"github.com/gin-gonic/gin"
 )
 
 // I is interface of authentication.
 type I interface {
-	GetReservationV1(c *gin.Context)
-	PostReservationV1(c *gin.Context)
-	DeleteReservationV1(c *gin.Context)
+	GetReservation(c *gin.Context)
+	PostReservation(c *gin.Context)
+	DeleteReservation(c *gin.Context)
 }
 
 // Reservation handles all info-related requests.
 type Reservation struct {
-	env env.Environments
+	env           env.Environments
+	vaccineClient *vaccineclient.VaccineClient
 }
 
 // Options provides interface to change behavior of Reservation.
 type Options struct {
-	Env env.Environments
+	Env           env.Environments
+	VaccineClient *vaccineclient.VaccineClient
 }
 
 // New returns default instance of Reservation.
 func New(opt Options) *Reservation {
 	return &Reservation{
-		env: opt.Env,
+		env:           opt.Env,
+		vaccineClient: opt.VaccineClient,
 	}
 }
 
-// ReservationResponse is the response of GetReservationV1
+// ReservationResponse is the response of GetReservation
 //
 // swagger:response ReservationResponse
 type ReservationResponse struct {
 	// The reservation info
 	// in: body
-	Reservation *ReservationModel `json:"reservation"`
+	Reservation *models.ReservationModel `json:"reservation"`
 }
 
-// ReservationModel is the body format of ReservationResponse
-//
-// swagger:model ReservationModel
-type ReservationModel struct {
-	// The reservation id
-	// required: true
-	// example: 0001
-	ID string `json:"id"`
-	// The reservation of the user
-	// example: Bob
-	// required: true
-	User string `json:"user"`
-	// The reservation hospital
-	// example: Taipei City Hospital Heping Fuyou Branch
-	// required: true
-	Hospital string `json:"hospital"`
-	// The reservation vaccinetype
-	// example: BNT
-	// required: true
-	VaccineType string `json:"vaccinetype"`
-	// The reservation date
-	// example: 1653974953
-	// required: true
-	Date int64 `json:"date"`
-	// The vaccination is completed
-	// example: true
-	// required: true
-	Completed bool `json:"completed"`
+func AuthVerify(c *gin.Context, givenNationID string) error {
+	nationID, exists := c.Get("nationID")
+	if !exists {
+		return fmt.Errorf("nationID not found in context")
+	}
+	if givenNationID != nationID {
+		return fmt.Errorf("nationID not match")
+	}
+	return nil
 }
