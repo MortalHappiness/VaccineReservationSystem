@@ -31,7 +31,7 @@ export default function ReservationStatus() {
           size="small"
           sx={{
             mx: 1,
-            width: 140
+            width: 140,
           }}
         />
         <Button
