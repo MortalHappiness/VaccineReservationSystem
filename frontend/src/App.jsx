@@ -6,6 +6,7 @@ import NavigationBar from "./NavigationBar";
 import ReservationSearch from "./Pages/ReservationSearch";
 import ReservationStatus from "./Pages/ReservationStatus";
 import User from "./Pages/User";
+import News from "./Pages/News";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -22,13 +23,13 @@ function App() {
   const [loginOpen, setLoginOpen] = useState(false);
   return (
     <Box sx={{ display: "flex" }}>
-      <NavigationBar loginOpen={loginOpen} setLoginOpen={setLoginOpen}/>
+      <NavigationBar loginOpen={loginOpen} setLoginOpen={setLoginOpen} />
       <Sidebar />
 
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Routes>
-          <Route path="/" element={<h1>main</h1>} />
+          <Route path="/" element={<News />} />
           <Route path="/user" element={<User />} />
           <Route path="/reservation" element={<ReservationSearch />} />
           <Route path="/status" element={<ReservationStatus />} />

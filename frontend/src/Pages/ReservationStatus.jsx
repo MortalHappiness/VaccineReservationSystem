@@ -15,17 +15,31 @@ const rows = [];
 export default function ReservationStatus() {
   return (
     <>
-      <Box sx={{ display: "flex" }} align="center">
-        <Typography sx={{ align: "center" }} align="center">
-          身分證字號：
-        </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+          mb: 5,
+        }}
+      >
+        <Typography>身分證字號：</Typography>
         <TextField
           id="reservation_status_id"
           variant="outlined"
           size="small"
-          sx={{ align: "center" }}
+          sx={{
+            mx: 1,
+            width: 140
+          }}
         />
-        <Button variant="contained" sx={{ align: "center" }}>
+        <Button
+          variant="contained"
+          sx={{
+            mx: 1,
+          }}
+        >
           查詢
         </Button>
       </Box>

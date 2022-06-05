@@ -25,8 +25,10 @@ export default function NavigationBar(props) {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           疫苗系統
         </Typography>
-        <Button color="inherit" onClick={()=>props.setLoginOpen(true)}>登入</Button>
-        <Login open={props.loginOpen} setLoginOpen={props.setLoginOpen}/>
+        <Button color="inherit" onClick={() => props.setLoginOpen(true)}>
+          登入
+        </Button>
+        <Login open={props.loginOpen} setLoginOpen={props.setLoginOpen} />
       </Toolbar>
     </AppBar>
     // </Box>

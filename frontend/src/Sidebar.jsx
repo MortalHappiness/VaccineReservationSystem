@@ -19,23 +19,31 @@ function Sidebar() {
   return (
     <Drawer
       sx={{
-        width: 240,
+        width: 200,
         flexShrink: 0,
         "& .MuiDrawer-paper": {
-          width: 240,
+          width: 200,
           boxSizing: "border-box",
         },
       }}
       variant="permanent"
       anchor="left"
     >
-      <Toolbar style={{ background: "primary" }}>
-        <Typography component={Link} to="/">
+      {/* <Toolbar style={{ background: "primary" }}>
+        <Typography sx={{
+          textDecoration: "none",
+          boxShadow: "none"
+        }} component={Link} to="/">
           首頁
         </Typography>
-      </Toolbar>
+      </Toolbar> */}
       {/* <Divider /> */}
       <List>
+        <ListItem key="首頁" disablePadding component={Link} to="/">
+          <ListItemButton>
+            <ListItemText primary="首頁" />
+          </ListItemButton>
+        </ListItem>
         <ListItem key="個人資料" disablePadding component={Link} to="/user">
           <ListItemButton>
             <ListItemText primary="個人資料" />

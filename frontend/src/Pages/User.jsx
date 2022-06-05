@@ -14,8 +14,7 @@ const theme = createTheme({
   detail: {
     borderRight: "2px solid black",
   },
-
-})
+});
 export default function User() {
   return (
     <TableContainer component={Paper}>

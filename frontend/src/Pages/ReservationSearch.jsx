@@ -412,18 +412,30 @@ export default function ReservationSearch() {
   };
   return (
     <>
-      <Box sx={{ display: "flex" }}>
-        <Typography>縣市：</Typography>
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <Select value={county} onChange={handleChange} displayEmpty>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+          mb: 1,
+        }}
+      >
+        <Typography >縣市：</Typography>
+        <FormControl sx={{ mr: 1}}>
+          <Select value={county} onChange={handleChange} displayEmpty sx={{ mx: 1, height: 40}}>
             {counties.map((ele) => (
-              <MenuItem key={ele} value={ele}>
+              <MenuItem key={ele} value={ele} sx={{
+                fontSize: 8
+              }}>
                 {ele}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <Button variant="contained">查詢</Button>
+        <Button variant="contained" sx={{
+            mx: 1,
+          }}>查詢</Button>
       </Box>
       {area_data[county].map((ele) => {
         return (
