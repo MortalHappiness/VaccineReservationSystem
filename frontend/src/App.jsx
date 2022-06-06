@@ -11,7 +11,7 @@ import News from "./Pages/News";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import { ReservationAPI } from "./api";
+import { ReservationAPI, SessionAPI } from "./api";
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -35,8 +35,17 @@ function App() {
         .catch
         //TODO error
         ();
+    } else {
+      setUserReservations([]);
     }
   }, [user]);
+
+  useEffect(() => {
+    SessionAPI.getSession().then((res) => {
+      console.log(res);
+      setUser(res);
+    });
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
