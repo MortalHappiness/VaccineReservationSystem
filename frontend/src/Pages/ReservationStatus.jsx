@@ -14,10 +14,12 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { ReservationAPI } from "../api";
 
 export default function ReservationStatus(props) {
-  const cancelReservation = (reservationID) => {
-    ReservationAPI.deleteReservation(reservationID)
+  const cancelReservation = (nationID, reservationID) => {
+    ReservationAPI.deleteReservation(nationID, reservationID)
       .then((res) => {
-        props.setUserReservations(userReservations.filter(ele.id !== res.id));
+        props.setUserReservations(
+          props.userReservations.filter((ele) => ele.id !== res)
+        );
       })
       .catch();
   };
@@ -64,27 +66,29 @@ export default function ReservationStatus(props) {
           </TableHead>
           <TableBody>
             {props.userReservations && props.userReservations.length > 0 ? (
-              props.userReservations.map((row) => (
-                <TableRow
-                  key={row.date}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell align="right">{row.hospital}</TableCell>
-                  <TableCell align="right">{row.address}</TableCell>
-                  <TableCell align="right">{row.vaccinetype}</TableCell>
-                  <TableCell
-                    align="right"
-                    onClick={() =>
-                      cancelReservation(props.user.nationID, row.id)
-                    }
+              props.userReservations.map((row) => {
+                return (
+                  <TableRow
+                    key={row.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <CancelIcon />
-                  </TableCell>
-                </TableRow>
-              ))
+                    <TableCell component="th" scope="row">
+                      {row.date}
+                    </TableCell>
+                    <TableCell align="right">{row.hospital.name}</TableCell>
+                    <TableCell align="right">{row.hospital.address}</TableCell>
+                    <TableCell align="right">{row.vaccinetype}</TableCell>
+                    <TableCell
+                      align="right"
+                      onClick={() =>
+                        cancelReservation(props.user.nationID, row.id)
+                      }
+                    >
+                      <CancelIcon />
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             ) : (
               <></>
             )}

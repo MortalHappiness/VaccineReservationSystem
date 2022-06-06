@@ -4,14 +4,17 @@ import axios from "axios";
 
 const userClient = axios.create({
   baseURL: "http://localhost:7712",
+  withCredentials: true,
 });
 
 const hospitalClient = axios.create({
   baseURL: "http://localhost:7714",
+  withCredentials: true,
 });
 
 const reservationClient = axios.create({
   baseURL: "http://localhost:7713",
+  withCredentials: true,
 });
 
 /**
@@ -52,8 +55,8 @@ const request = function (options, client) {
 
 export const userRequest = (options) => request(options, userClient);
 export const hospitalRequest = (options) => request(options, hospitalClient);
-export const reservationRequest = (options) => request(options, reservationClient);
-
+export const reservationRequest = (options) =>
+  request(options, reservationClient);
 
 // export default userRequest;
 

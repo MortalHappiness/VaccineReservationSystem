@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-import {userRequest, hospitalRequest, reservationRequest} from "./request";
+import { userRequest, hospitalRequest, reservationRequest } from "./request";
 export const SessionAPI = {
   createSession: (nationID, healthCardID) =>
     userRequest({
@@ -51,11 +51,12 @@ export const UserAPI = {
     birthDay,
     address,
     phone
-  ) => userRequest({
-    method: "put",
-    url: `/api/users/${nationID}`,
-    data: { nationID, healthCardID, name, gender, birthDay, address, phone },
-  }),
+  ) =>
+    userRequest({
+      method: "put",
+      url: `/api/users/${nationID}`,
+      data: { nationID, healthCardID, name, gender, birthDay, address, phone },
+    }),
   deleteUser: (nationID) =>
     userRequest({
       method: "delete",
@@ -79,11 +80,12 @@ export const HospitalAPI = {
         township,
       },
     }),
-  updateHospital: (id, name, county, township, address, vaccineCnt) => hospitalRequest({
-    method: "put",
-    url: `/api/hospitals/${id}`,
-    data: { id, county, name, township, address, vaccineCnt },
-  }),
+  updateHospital: (id, name, county, township, address, vaccineCnt) =>
+    hospitalRequest({
+      method: "put",
+      url: `/api/hospitals/${id}`,
+      data: { id, county, name, township, address, vaccineCnt },
+    }),
   deleteHospital: (hospitalID) =>
     hospitalRequest({
       method: "delete",
