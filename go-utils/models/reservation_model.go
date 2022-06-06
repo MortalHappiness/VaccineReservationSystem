@@ -47,8 +47,6 @@ func ConvertRowToReservationModel(ID string, row bigtable.Row) (*ReservationMode
 	for _, col := range row["reservation"] {
 		qualifier := col.Column[strings.IndexByte(col.Column, ':')+1:]
 		switch qualifier {
-		case "ID":
-			reservation.ID = string(col.Value)
 		case "userID":
 			reservation.User.NationID = string(col.Value)
 		case "hospitalID":
@@ -79,9 +77,7 @@ func ConvertReservationModelToAttributes(reservation *ReservationModel) map[stri
 	if reservation.Date != 0 {
 		attributes["date"] = strconv.FormatInt(reservation.Date, 10)
 	}
-	if reservation.Completed {
-		attributes["completed"] = strconv.FormatBool(reservation.Completed)
-	}
+	attributes["completed"] = strconv.FormatBool(reservation.Completed)
 
 	return attributes
 }
