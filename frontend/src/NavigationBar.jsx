@@ -67,7 +67,9 @@ export default function NavigationBar(props) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose} component={Link} to="/user">個人資料</MenuItem>
+              <MenuItem onClick={handleClose} component={Link} to="/user">
+                個人資料
+              </MenuItem>
               <MenuItem onClick={handleLogout}>登出</MenuItem>
             </Menu>
           </>
