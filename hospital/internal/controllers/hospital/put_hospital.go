@@ -32,8 +32,13 @@ func (u *Hospital) PutHospital(c *gin.Context) {
 		_ = c.Error(apierrors.NewBadRequestError(err))
 		return
 	}
-	// TODO: update hospital
-
+	// update hospital
+	attributes := models.ConvertHospitalModelToAttributes(&model)
+	err = u.vaccineClient.CreateOrUpdateHospital(hospitalID, attributes)
+	if err != nil {
+		_ = c.Error(apierrors.NewInternalServerError(err))
+		return
+	}
 	c.JSON(http.StatusOK, model)
 }
 

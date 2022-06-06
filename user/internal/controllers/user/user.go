@@ -3,9 +3,7 @@ package user
 
 import (
 	"fmt"
-	"strings"
 
-	"cloud.google.com/go/bigtable"
 	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
 	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/MortalHappiness/VaccineReservationSystem/user/internal/env"
@@ -47,35 +45,6 @@ type UserResponse struct {
 	// The user info
 	// in: body
 	User *models.UserModel `json:"user"`
-}
-
-// ConvertRowToUserModel converts bigtable.Row to *UserModel with given nationID.
-func ConvertRowToUserModel(nationID string, row bigtable.Row) (*models.UserModel, error) {
-	user := &models.UserModel{
-		NationID: nationID,
-	}
-	for _, col := range row["user"] {
-		qualifier := col.Column[strings.IndexByte(col.Column, ':')+1:]
-		switch qualifier {
-		case "name":
-			user.Name = string(col.Value)
-		case "gender":
-			user.Gender = string(col.Value)
-		case "healthCardID":
-			user.HealthCardID = string(col.Value)
-		case "birthday":
-			user.BirthDay = string(col.Value)
-		case "address":
-			user.Address = string(col.Value)
-		case "phone":
-			user.Phone = string(col.Value)
-		case "vaccines":
-			user.Vaccines = strings.Split(string(col.Value), ",")
-		default:
-			return nil, fmt.Errorf("unknown qualifier: %s", qualifier)
-		}
-	}
-	return user, nil
 }
 
 func AuthVerify(c *gin.Context, givenNationID string) error {

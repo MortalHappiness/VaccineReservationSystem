@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
+	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -40,7 +41,7 @@ func (u *User) GetUserByID(c *gin.Context) {
 		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("user %s not found", nationID)))
 		return
 	}
-	user, err := ConvertRowToUserModel(nationID, row)
+	user, err := models.ConvertRowToUserModel(nationID, row)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to convert row to user: %w", err)))
 		return

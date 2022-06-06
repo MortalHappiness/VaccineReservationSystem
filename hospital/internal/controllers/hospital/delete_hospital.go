@@ -25,7 +25,12 @@ func (u *Hospital) DeleteHospital(c *gin.Context) {
 		return
 	}
 
-	// TODO: delete hospital
+	// delete hospital
+	err := u.vaccineClient.DeleteHospital(hospitalID)
+	if err != nil {
+		_ = c.Error(apierrors.NewInternalServerError(err))
+		return
+	}
 
 	c.JSON(http.StatusOK, hospitalID)
 }

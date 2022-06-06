@@ -20,6 +20,7 @@ func MakeRouter(opt *Options) *gin.Engine {
 		api.Use(opt.errorCollectorMiddleware)
 		api.GET("/hospitals", opt.hospitalController.GetHospital)
 		api.POST("/hospitals", opt.hospitalController.PostHospital)
+		api.GET("/hospitals/:hospitalID", opt.hospitalController.GetHospitalByID)
 		api.PUT("/hospitals/:hospitalID", opt.hospitalController.PutHospital)
 		api.DELETE("/hospitals/:hospitalID", opt.hospitalController.DeleteHospital)
 	}

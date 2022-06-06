@@ -188,10 +188,27 @@ paths:
         "301":
           $ref: '#/responses/emptyResponse'
         "404":
-          $ref: '#/responses/genericError'
+          $ref: '#/responses/genericErrorcd'
       summary: Get Server API Specification
       tags:
       - Development
+  /api/reservations/:reservationID:
+    get:
+      operationId: GetReservation
+      responses:
+        "200":
+          $ref: '#/responses/ReservationResponse'
+        "400":
+          $ref: '#/responses/BadRequestErrorResponse'
+        "401":
+          $ref: '#/responses/UnauthorizedErrorResponse'
+        "404":
+          $ref: '#/responses/NotFoundErrorResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Get the reservation information by reservation id.
+      tags:
+      - Reservation
   /api/reservations/users/:nationID:
     get:
       operationId: GetReservation
@@ -244,6 +261,27 @@ paths:
         "500":
           $ref: '#/responses/InternalServerErrorResponse'
       summary: Delete the reservation by id.
+      tags:
+      - Reservation
+    put:
+      operationId: PutReservationRequest
+      parameters:
+      - description: The reservation info
+        in: body
+        name: reservation
+        schema:
+          $ref: '#/definitions/ReservationModel'
+        x-go-name: Reservation
+      responses:
+        "200":
+          $ref: '#/responses/ReservationResponse'
+        "400":
+          $ref: '#/responses/BadRequestErrorResponse'
+        "401":
+          $ref: '#/responses/UnauthorizedErrorResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Add a new reservation.
       tags:
       - Reservation
 produces:

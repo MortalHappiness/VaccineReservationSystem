@@ -2,6 +2,7 @@
 package hospital
 
 import (
+	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
 	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
 	"github.com/MortalHappiness/VaccineReservationSystem/hospital/internal/env"
 	"github.com/gin-gonic/gin"
@@ -13,22 +14,26 @@ type I interface {
 	PostHospital(c *gin.Context)
 	PutHospital(c *gin.Context)
 	DeleteHospital(c *gin.Context)
+	GetHospitalByID(c *gin.Context)
 }
 
 // Hospital handles all info-related requests.
 type Hospital struct {
-	env env.Environments
+	env           env.Environments
+	vaccineClient *vaccineclient.VaccineClient
 }
 
 // Options provides interface to change behavior of Hospital.
 type Options struct {
-	Env env.Environments
+	Env           env.Environments
+	VaccineClient *vaccineclient.VaccineClient
 }
 
 // New returns default instance of Hospital.
 func New(opt Options) *Hospital {
 	return &Hospital{
-		env: opt.Env,
+		env:           opt.Env,
+		vaccineClient: opt.VaccineClient,
 	}
 }
 

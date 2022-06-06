@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// PostReservation adds a new reservation and returns him/her.
-// swagger:route POST /api/reservations/users/:nationID Reservation PostReservationRequest
+// Put adds a new reservation and returns him/her.
+// swagger:route PUT /api/reservations/users/:nationID/:reservationID Reservation PutReservationRequest
 //
 // Add a new reservation.
 //
@@ -19,7 +19,7 @@ import (
 //   401: UnauthorizedErrorResponse
 //   500: InternalServerErrorResponse
 //
-func (u *Reservation) PostReservation(c *gin.Context) {
+func (u *Reservation) PutReservation(c *gin.Context) {
 	nationID := c.Param("nationID")
 	err := AuthVerify(c, nationID)
 	if err != nil {
@@ -45,10 +45,10 @@ func (u *Reservation) PostReservation(c *gin.Context) {
 	c.JSON(http.StatusOK, model)
 }
 
-// PostReservationRequest is the request of PostReservation
+// PutReservationRequest is the request of PutReservation
 //
-// swagger:parameters PostReservationRequest
-type PostReservationRequest struct {
+// swagger:parameters PutReservationRequest
+type PutReservationRequest struct {
 	// The reservation info
 	// in: body
 	Reservation *models.ReservationModel `json:"reservation"`

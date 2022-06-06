@@ -55,5 +55,6 @@ func (u *Hospital) GetHospital(c *gin.Context) {
 			"AZ":  200,
 		},
 	}
+
 	c.JSON(http.StatusOK, model)
 }

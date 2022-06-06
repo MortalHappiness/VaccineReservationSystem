@@ -15,6 +15,8 @@ type I interface {
 	GetReservation(c *gin.Context)
 	PostReservation(c *gin.Context)
 	DeleteReservation(c *gin.Context)
+	GetReservationByID(c *gin.Context)
+	PutReservation(c *gin.Context)
 }
 
 // Reservation handles all info-related requests.

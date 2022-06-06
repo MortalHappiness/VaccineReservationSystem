@@ -3,7 +3,6 @@ package user
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
 	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/models"
@@ -45,17 +44,9 @@ func (u *User) PutUser(c *gin.Context) {
 		return
 	}
 
-	// TODO: user should return user
-	err = u.vaccineClient.CreateOrUpdateUser(
-		user.NationID,
-		user.Name,
-		user.HealthCardID,
-		user.Gender,
-		user.BirthDay,
-		user.Address,
-		user.Phone,
-		strings.Join(user.Vaccines, ","),
-	)
+	// user should return user
+	attributes := models.ConvertUserModelToAttributes(nationID, &user)
+	err = u.vaccineClient.CreateOrUpdateUser(nationID, attributes)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(err))
 		return

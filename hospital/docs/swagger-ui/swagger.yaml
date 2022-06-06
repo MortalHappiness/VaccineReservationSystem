@@ -162,6 +162,20 @@ paths:
       summary: Delete the hospital by id.
       tags:
       - Hospital
+    get:
+      operationId: GetHospitalByID
+      responses:
+        "200":
+          $ref: '#/responses/HospitalResponse'
+        "400":
+          $ref: '#/responses/BadRequestErrorResponse'
+        "404":
+          $ref: '#/responses/NotFoundErrorResponse'
+        "500":
+          $ref: '#/responses/InternalServerErrorResponse'
+      summary: Get the hospital information by id.
+      tags:
+      - Hospital
     put:
       operationId: PutHospitalRequest
       parameters:
