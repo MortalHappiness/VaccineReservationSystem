@@ -2,6 +2,7 @@ package vaccineclient
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -39,13 +40,11 @@ func PrintRow(row bigtable.Row) {
 	println()
 }
 
-func setIfNotEmptyString(mut *bigtable.Mutation, columnFamilyName string, columnName string, timestamp bigtable.Timestamp, value string) {
-	if value != "" {
-		mut.Set(columnFamilyName, columnName, timestamp, []byte(value))
+func (vaccineClient *VaccineClient) createOrUpdate(rowKey string, columnFamilyName string, attributes map[string]string) error {
+	if len(attributes) == 0 {
+		return errors.New("attributes cannot be empty")
 	}
-}
 
-func (vaccineClient *VaccineClient) CreateOrUpdateUser(nationID string, name string, healthCardID string, gender string, birthday string, address string, phone string, vaccines string) error {
 	ctx := context.Background()
 	client, err := bigtable.NewClient(ctx, vaccineClient.projectID, vaccineClient.instanceID)
 	if err != nil {
@@ -54,20 +53,14 @@ func (vaccineClient *VaccineClient) CreateOrUpdateUser(nationID string, name str
 	defer client.Close()
 	tbl := client.Open(vaccineClient.tableName)
 
-	columnFamilyName := "user"
 	timestamp := bigtable.Now()
 
 	mut := bigtable.NewMutation()
 
-	setIfNotEmptyString(mut, columnFamilyName, "name", timestamp, name)
-	setIfNotEmptyString(mut, columnFamilyName, "healthCardID", timestamp, healthCardID)
-	setIfNotEmptyString(mut, columnFamilyName, "gender", timestamp, gender)
-	setIfNotEmptyString(mut, columnFamilyName, "birthday", timestamp, birthday)
-	setIfNotEmptyString(mut, columnFamilyName, "address", timestamp, address)
-	setIfNotEmptyString(mut, columnFamilyName, "phone", timestamp, phone)
-	setIfNotEmptyString(mut, columnFamilyName, "vaccines", timestamp, vaccines)
+	for columnName, value := range attributes {
+		mut.Set(columnFamilyName, columnName, timestamp, []byte(value))
+	}
 
-	rowKey := "user#" + nationID
 	if err := tbl.Apply(ctx, rowKey, mut); err != nil {
 		return fmt.Errorf("apply: %v", err)
 	}
@@ -75,7 +68,7 @@ func (vaccineClient *VaccineClient) CreateOrUpdateUser(nationID string, name str
 	return nil
 }
 
-func (vaccineClient *VaccineClient) GetUser(nationID string) (bigtable.Row, error) {
+func (vaccineClient *VaccineClient) get(rowKey string) (bigtable.Row, error) {
 	ctx := context.Background()
 	client, err := bigtable.NewClient(ctx, vaccineClient.projectID, vaccineClient.instanceID)
 	if err != nil {
@@ -83,10 +76,9 @@ func (vaccineClient *VaccineClient) GetUser(nationID string) (bigtable.Row, erro
 	}
 	defer client.Close()
 	tbl := client.Open(vaccineClient.tableName)
-	rowkey := "user#" + nationID
-	row, err := tbl.ReadRow(ctx, rowkey, bigtable.RowFilter(bigtable.LatestNFilter(1)))
+	row, err := tbl.ReadRow(ctx, rowKey, bigtable.RowFilter(bigtable.LatestNFilter(1)))
 	if err != nil {
-		return nil, fmt.Errorf("Could not read row with key %s: %w", rowkey, err)
+		return nil, fmt.Errorf("Could not read row with key %s: %w", rowKey, err)
 	}
 
 	if len(row) == 0 {
@@ -96,7 +88,7 @@ func (vaccineClient *VaccineClient) GetUser(nationID string) (bigtable.Row, erro
 	return row, nil
 }
 
-func (vaccineClient *VaccineClient) DeleteUser(nationID string) error {
+func (vaccineClient *VaccineClient) delete(rowKey string) error {
 	ctx := context.Background()
 	client, err := bigtable.NewClient(ctx, vaccineClient.projectID, vaccineClient.instanceID)
 	if err != nil {
@@ -108,10 +100,45 @@ func (vaccineClient *VaccineClient) DeleteUser(nationID string) error {
 	mut := bigtable.NewMutation()
 	mut.DeleteRow()
 
-	rowKey := "user#" + nationID
 	if err := tbl.Apply(ctx, rowKey, mut); err != nil {
 		return fmt.Errorf("apply: %v", err)
 	}
 
 	return nil
+}
+
+func (vaccineClient *VaccineClient) CreateOrUpdateUser(ID string, attributes map[string]string) error {
+	return vaccineClient.createOrUpdate("user#"+ID, "user", attributes)
+}
+
+func (vaccineClient *VaccineClient) GetUser(ID string) (bigtable.Row, error) {
+	return vaccineClient.get("user#" + ID)
+}
+
+func (vaccineClient *VaccineClient) DeleteUser(ID string) error {
+	return vaccineClient.delete("user#" + ID)
+}
+
+func (vaccineClient *VaccineClient) CreateOrUpdateHospital(ID string, attributes map[string]string) error {
+	return vaccineClient.createOrUpdate("hospital#"+ID, "hospital", attributes)
+}
+
+func (vaccineClient *VaccineClient) GetHospital(ID string) (bigtable.Row, error) {
+	return vaccineClient.get("hospital#" + ID)
+}
+
+func (vaccineClient *VaccineClient) DeleteHospital(ID string) error {
+	return vaccineClient.delete("hospital#" + ID)
+}
+
+func (vaccineClient *VaccineClient) CreateOrUpdateReservation(ID string, attributes map[string]string) error {
+	return vaccineClient.createOrUpdate("reservation#"+ID, "reservation", attributes)
+}
+
+func (vaccineClient *VaccineClient) GetReservation(ID string) (bigtable.Row, error) {
+	return vaccineClient.get("reservation#" + ID)
+}
+
+func (vaccineClient *VaccineClient) DeleteReservation(ID string) error {
+	return vaccineClient.delete("reservation#" + ID)
 }
