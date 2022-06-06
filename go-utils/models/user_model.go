@@ -1,5 +1,12 @@
 package models
 
+import (
+	"fmt"
+	"strings"
+
+	"cloud.google.com/go/bigtable"
+)
+
 // UserModel is the body format of UserResponse
 //
 // swagger:model UserModel
@@ -44,4 +51,60 @@ type UserModel struct {
 	// in: body
 	// required: false
 	Vaccines []string `json:"vaccines"`
+}
+
+// ConvertRowToUserModel converts bigtable.Row to *UserModel with given nationID.
+func ConvertRowToUserModel(nationID string, row bigtable.Row) (*UserModel, error) {
+	user := &UserModel{
+		NationID: nationID,
+	}
+	for _, col := range row["user"] {
+		qualifier := col.Column[strings.IndexByte(col.Column, ':')+1:]
+		switch qualifier {
+		case "name":
+			user.Name = string(col.Value)
+		case "gender":
+			user.Gender = string(col.Value)
+		case "healthCardID":
+			user.HealthCardID = string(col.Value)
+		case "birthDay":
+			user.BirthDay = string(col.Value)
+		case "address":
+			user.Address = string(col.Value)
+		case "phone":
+			user.Phone = string(col.Value)
+		case "vaccines":
+			user.Vaccines = strings.Split(string(col.Value), ",")
+		default:
+			return nil, fmt.Errorf("unknown qualifier: %s", qualifier)
+		}
+	}
+	return user, nil
+}
+
+// ConvertUserModelToRow converts *UserModel to attributes of bigtable.Row.
+func ConvertUserModelToAttributes(nationID string, user *UserModel) map[string]string {
+	attributes := map[string]string{}
+	if user.Name != "" {
+		attributes["name"] = user.Name
+	}
+	if user.Gender != "" {
+		attributes["gender"] = user.Gender
+	}
+	if user.HealthCardID != "" {
+		attributes["healthCardID"] = user.HealthCardID
+	}
+	if user.BirthDay != "" {
+		attributes["birthDay"] = user.BirthDay
+	}
+	if user.Address != "" {
+		attributes["address"] = user.Address
+	}
+	if user.Phone != "" {
+		attributes["phone"] = user.Phone
+	}
+	if len(user.Vaccines) > 0 {
+		attributes["vaccines"] = strings.Join(user.Vaccines, ",")
+	}
+	return attributes
 }
