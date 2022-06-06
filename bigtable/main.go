@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/csv"
 	"log"
 	"os"
 
@@ -11,7 +12,36 @@ import (
 	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
 )
 
-const tableName = "vaccine-reservation-system"
+func readCsvFile(filePath string) [][]string {
+	f, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal("Unable to read input file "+filePath, err)
+	}
+	defer f.Close()
+
+	csvReader := csv.NewReader(f)
+	records, err := csvReader.ReadAll()
+	if err != nil {
+		log.Fatal("Unable to parse file as CSV for "+filePath, err)
+	}
+
+	return records
+}
+
+func insertDataFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath string, collection string) {
+	records := readCsvFile(filePath)
+	headers := records[0]
+	rows := records[1:]
+	for _, row := range rows {
+		ID := row[0]
+		attributes := make(map[string]string)
+		for j, value := range row[1:] {
+			key := headers[j+1]
+			attributes[key] = value
+		}
+		vaccineClient.CreateOrUpdate(collection+"#"+ID, collection, attributes)
+	}
+}
 
 func main() {
 	// Read environment variables
@@ -28,6 +58,11 @@ func main() {
 	instanceID, present := os.LookupEnv("INSTANCE_ID")
 	if !present {
 		log.Fatal("Environment variable not found: INSTANCE_ID")
+	}
+
+	tableName, present := os.LookupEnv("TABLE_NAME")
+	if !present {
+		log.Fatal("TABLE_NAME")
 	}
 
 	// Setup tables and column families
@@ -52,53 +87,7 @@ func main() {
 
 	vaccineClient := vaccineclient.NewVaccineClient(projectID, instanceID, tableName)
 
-	// Insert user data
-	vaccineClient.CreateOrUpdateUser("A123456789", map[string]string{
-		"name":         "Alice",
-		"healthCardID": "000011112222",
-		"gender":       "Female",
-		"birthday":     "2022/05/23",
-		"address":      "No.2, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan",
-		"phone":        "0912345678",
-		"vaccines":     "BNT,AZ",
-	})
-	vaccineClient.CreateOrUpdateUser("B223456789", map[string]string{
-		"name":         "Bob",
-		"healthCardID": "012311113333",
-		"gender":       "Male",
-		"birthday":     "2022/01/25",
-		"address":      "No.2, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan",
-		"phone":        "0987654321",
-		"vaccines":     "Moderna,BNT",
-	})
-
-	// Insert hospital data
-	vaccineClient.CreateOrUpdateHospital("1", map[string]string{
-		"name":       "Hospital1",
-		"city":       "Taipei",
-		"township":   "Da'an District",
-		"address":    "example address 1",
-		"vaccineCnt": "BNT:1,AZ:2",
-	})
-
-	// Insert Reservation data
-	vaccineClient.CreateOrUpdateReservation("1", map[string]string{
-		"userID":      "A123456789",
-		"hospitalID":  "1",
-		"vaccineType": "BNT",
-		"datetime":    "1654524434",
-		"completed":   "1",
-	})
-
-	// Debug
-	// row, _ := vaccineClient.GetUser("A123456789")
-	// vaccineclient.PrintRow(row)
-	// vaccineClient.CreateOrUpdateUser("A123456789", map[string]string{
-	// 	"name": "Alice1",
-	// })
-	// row, _ = vaccineClient.GetUser("A123456789")
-	// vaccineclient.PrintRow(row)
-	// vaccineClient.DeleteUser("A123456789")
-	// row, _ = vaccineClient.GetUser("A123456789")
-	// vaccineclient.PrintRow(row)
+	insertDataFromCsvFile(vaccineClient, "data/user.csv", "user")
+	insertDataFromCsvFile(vaccineClient, "data/hospital.csv", "hospital")
+	insertDataFromCsvFile(vaccineClient, "data/reservation.csv", "reservation")
 }

@@ -24,6 +24,11 @@ func NewVaccineClient(projectID string, instanceID string, tableName string) *Va
 	return vaccineclient
 }
 
+// Utility function to print out a row
+//
+// Example Usage:
+//
+// vaccineclient.PrintRow(row)
 func PrintRow(row bigtable.Row) {
 	if row == nil {
 		println("Empty Row\n")
@@ -40,7 +45,7 @@ func PrintRow(row bigtable.Row) {
 	println()
 }
 
-func (vaccineClient *VaccineClient) createOrUpdate(rowKey string, columnFamilyName string, attributes map[string]string) error {
+func (vaccineClient *VaccineClient) CreateOrUpdate(rowKey string, columnFamilyName string, attributes map[string]string) error {
 	if len(attributes) == 0 {
 		return errors.New("attributes cannot be empty")
 	}
@@ -107,20 +112,49 @@ func (vaccineClient *VaccineClient) delete(rowKey string) error {
 	return nil
 }
 
+// Create or update a user, attributes map cannot be empty
+//
+// Example Usage (Create):
+//
+// err := vaccineClient.CreateOrUpdateUser("A123456789", map[string]string{
+// 	"name":         "Alice",
+// 	"healthCardID": "000011112222",
+// 	"gender":       "Female",
+// 	"birthday":     "2022/05/23",
+// 	"address":      "No.2, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan",
+// 	"phone":        "0912345678",
+// 	"vaccines":     "BNT,AZ",
+// })
+//
+// Example Usage (Update):
+//
+// err := vaccineClient.CreateOrUpdateUser("A123456789", map[string]string{
+// 	"name":         "Alice1",
+// })
 func (vaccineClient *VaccineClient) CreateOrUpdateUser(ID string, attributes map[string]string) error {
-	return vaccineClient.createOrUpdate("user#"+ID, "user", attributes)
+	return vaccineClient.CreateOrUpdate("user#"+ID, "user", attributes)
 }
 
+// Get a user
+//
+// Example Usage:
+//
+// row, err := vaccineClient.GetUser("A123456789")
 func (vaccineClient *VaccineClient) GetUser(ID string) (bigtable.Row, error) {
 	return vaccineClient.get("user#" + ID)
 }
 
+// Delete a user
+//
+// Example Usage:
+//
+// err := vaccineClient.DeleteUser("A123456789")
 func (vaccineClient *VaccineClient) DeleteUser(ID string) error {
 	return vaccineClient.delete("user#" + ID)
 }
 
 func (vaccineClient *VaccineClient) CreateOrUpdateHospital(ID string, attributes map[string]string) error {
-	return vaccineClient.createOrUpdate("hospital#"+ID, "hospital", attributes)
+	return vaccineClient.CreateOrUpdate("hospital#"+ID, "hospital", attributes)
 }
 
 func (vaccineClient *VaccineClient) GetHospital(ID string) (bigtable.Row, error) {
@@ -132,7 +166,7 @@ func (vaccineClient *VaccineClient) DeleteHospital(ID string) error {
 }
 
 func (vaccineClient *VaccineClient) CreateOrUpdateReservation(ID string, attributes map[string]string) error {
-	return vaccineClient.createOrUpdate("reservation#"+ID, "reservation", attributes)
+	return vaccineClient.CreateOrUpdate("reservation#"+ID, "reservation", attributes)
 }
 
 func (vaccineClient *VaccineClient) GetReservation(ID string) (bigtable.Row, error) {
