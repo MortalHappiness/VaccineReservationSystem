@@ -1,2 +1,4 @@
-ID,name,city,township,address,vaccineCnt
-1,Hospital1,Taipei,"Da'an District","example address 1","BNT:1,AZ:2"
+ID,county,township,name,address,vaccineCnt
+1,Taipei,Zhongzheng,"Hospital 1","example address 1","BNT:1,AZ:2"
+2,Taipei,Zhongzheng,"Hospital 2","example address 2","BNT:2,AZ:2"
+3,Taipei,Da an,"Hospital 3","example address 3","Moderna:1,AZ:2"

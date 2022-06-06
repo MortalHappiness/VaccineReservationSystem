@@ -12,7 +12,7 @@ import (
 	"github.com/MortalHappiness/VaccineReservationSystem/bigtable/pkg/vaccineclient"
 )
 
-func readCsvFile(filePath string) [][]string {
+func readCsvFile(filePath string) ([]string, [][]string) {
 	f, err := os.Open(filePath)
 	if err != nil {
 		log.Fatal("Unable to read input file "+filePath, err)
@@ -25,21 +25,57 @@ func readCsvFile(filePath string) [][]string {
 		log.Fatal("Unable to parse file as CSV for "+filePath, err)
 	}
 
-	return records
-}
-
-func insertDataFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath string, collection string) {
-	records := readCsvFile(filePath)
 	headers := records[0]
 	rows := records[1:]
+
+	return headers, rows
+}
+
+func insertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
+	filePath := "data/user.csv"
+	headers, rows := readCsvFile(filePath)
 	for _, row := range rows {
 		ID := row[0]
 		attributes := make(map[string]string)
-		for j, value := range row[1:] {
-			key := headers[j+1]
+		for i := 1; i < len(row); i++ {
+			key := headers[i]
+			value := row[i]
 			attributes[key] = value
 		}
-		vaccineClient.CreateOrUpdate(collection+"#"+ID, collection, attributes)
+		vaccineClient.CreateOrUpdateUser(ID, attributes)
+	}
+}
+
+func insertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
+	filePath := "data/hospital.csv"
+	headers, rows := readCsvFile(filePath)
+	for _, row := range rows {
+		ID := row[0]
+		county := row[1]
+		township := row[2]
+		attributes := make(map[string]string)
+		for i := 3; i < len(row); i++ {
+			key := headers[i]
+			value := row[i]
+			attributes[key] = value
+		}
+		vaccineClient.CreateOrUpdateHospital(ID, county, township, attributes)
+	}
+}
+
+func insertReservationFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
+	filePath := "data/reservation.csv"
+	headers, rows := readCsvFile(filePath)
+	for _, row := range rows {
+		ID := row[0]
+		userID := row[1]
+		attributes := make(map[string]string)
+		for i := 2; i < len(row); i++ {
+			key := headers[i]
+			value := row[i]
+			attributes[key] = value
+		}
+		vaccineClient.CreateOrUpdateReservation(ID, userID, attributes)
 	}
 }
 
@@ -87,7 +123,7 @@ func main() {
 
 	vaccineClient := vaccineclient.NewVaccineClient(projectID, instanceID, tableName)
 
-	insertDataFromCsvFile(vaccineClient, "data/user.csv", "user")
-	insertDataFromCsvFile(vaccineClient, "data/hospital.csv", "hospital")
-	insertDataFromCsvFile(vaccineClient, "data/reservation.csv", "reservation")
+	insertUserFromCsvFile(vaccineClient)
+	insertHospitalFromCsvFile(vaccineClient)
+	insertReservationFromCsvFile(vaccineClient)
 }

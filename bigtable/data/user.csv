@@ -1,3 +1,3 @@
-ID,name,healthCardID,gender,birthday,address,phone,vaccines
+ID,name,healthCardID,gender,birthDay,address,phone,vaccines
 A123456789,Alice,000011112222,Female,2022/05/23,"No.2, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan",0912345678,"BNT,AZ"
 B223456789,Bob,012311113333,Male,2022/01/25,"No.2, Sec. 4, Roosevelt Road, Taipei, 10617 Taiwan",0987654321,"Moderna,BNT"

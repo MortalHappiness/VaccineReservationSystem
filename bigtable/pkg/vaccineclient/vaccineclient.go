@@ -45,7 +45,7 @@ func PrintRow(row bigtable.Row) {
 	println()
 }
 
-func (vaccineClient *VaccineClient) CreateOrUpdate(rowKey string, columnFamilyName string, attributes map[string]string) error {
+func (vaccineClient *VaccineClient) createOrUpdate(rowKey string, columnFamilyName string, attributes map[string]string) error {
 	if len(attributes) == 0 {
 		return errors.New("attributes cannot be empty")
 	}
@@ -83,7 +83,7 @@ func (vaccineClient *VaccineClient) get(rowKey string) (bigtable.Row, error) {
 	tbl := client.Open(vaccineClient.tableName)
 	row, err := tbl.ReadRow(ctx, rowKey, bigtable.RowFilter(bigtable.LatestNFilter(1)))
 	if err != nil {
-		return nil, fmt.Errorf("Could not read row with key %s: %w", rowKey, err)
+		return nil, fmt.Errorf("could not read row with key %s: %w", rowKey, err)
 	}
 
 	if len(row) == 0 {
@@ -91,6 +91,31 @@ func (vaccineClient *VaccineClient) get(rowKey string) (bigtable.Row, error) {
 	}
 
 	return row, nil
+}
+
+func (vaccineClient *VaccineClient) getPrefix(rowKeyPrefix string) ([]bigtable.Row, error) {
+	ctx := context.Background()
+	client, err := bigtable.NewClient(ctx, vaccineClient.projectID, vaccineClient.instanceID)
+	if err != nil {
+		return nil, fmt.Errorf("bigtable.NewClient: %w", err)
+	}
+	defer client.Close()
+	tbl := client.Open(vaccineClient.tableName)
+	var rows []bigtable.Row
+	err = tbl.ReadRows(ctx, bigtable.PrefixRange(rowKeyPrefix),
+		func(row bigtable.Row) bool {
+			rows = append(rows, row)
+			return true
+		})
+	if err != nil {
+		return nil, fmt.Errorf("could not read rows with prefix %s: %w", rowKeyPrefix, err)
+	}
+
+	if err = client.Close(); err != nil {
+		return nil, fmt.Errorf("client.Close(): %v", err)
+	}
+
+	return rows, nil
 }
 
 func (vaccineClient *VaccineClient) delete(rowKey string) error {
@@ -132,7 +157,8 @@ func (vaccineClient *VaccineClient) delete(rowKey string) error {
 // 	"name":         "Alice1",
 // })
 func (vaccineClient *VaccineClient) CreateOrUpdateUser(ID string, attributes map[string]string) error {
-	return vaccineClient.CreateOrUpdate("user#"+ID, "user", attributes)
+	rowKey := "user#" + ID
+	return vaccineClient.createOrUpdate(rowKey, "user", attributes)
 }
 
 // Get a user
@@ -141,7 +167,8 @@ func (vaccineClient *VaccineClient) CreateOrUpdateUser(ID string, attributes map
 //
 // row, err := vaccineClient.GetUser("A123456789")
 func (vaccineClient *VaccineClient) GetUser(ID string) (bigtable.Row, error) {
-	return vaccineClient.get("user#" + ID)
+	rowKey := "user#" + ID
+	return vaccineClient.get(rowKey)
 }
 
 // Delete a user
@@ -150,29 +177,46 @@ func (vaccineClient *VaccineClient) GetUser(ID string) (bigtable.Row, error) {
 //
 // err := vaccineClient.DeleteUser("A123456789")
 func (vaccineClient *VaccineClient) DeleteUser(ID string) error {
-	return vaccineClient.delete("user#" + ID)
+	rowKey := "user#" + ID
+	return vaccineClient.delete(rowKey)
 }
 
-func (vaccineClient *VaccineClient) CreateOrUpdateHospital(ID string, attributes map[string]string) error {
-	return vaccineClient.CreateOrUpdate("hospital#"+ID, "hospital", attributes)
+func (vaccineClient *VaccineClient) CreateOrUpdateHospital(ID string, county string, township string, attributes map[string]string) error {
+	rowKey := fmt.Sprintf("hospital#%s#%s#%s", county, township, ID)
+	return vaccineClient.createOrUpdate(rowKey, "hospital", attributes)
 }
 
-func (vaccineClient *VaccineClient) GetHospital(ID string) (bigtable.Row, error) {
-	return vaccineClient.get("hospital#" + ID)
+func (vaccineClient *VaccineClient) GetHospital(ID string, county string, township string) (bigtable.Row, error) {
+	rowKey := fmt.Sprintf("hospital#%s#%s#%s", county, township, ID)
+	return vaccineClient.get(rowKey)
 }
 
-func (vaccineClient *VaccineClient) DeleteHospital(ID string) error {
-	return vaccineClient.delete("hospital#" + ID)
+func (vaccineClient *VaccineClient) GetHospitals(county string, township string) ([]bigtable.Row, error) {
+	rowKeyPrefix := fmt.Sprintf("hospital#%s#%s", county, township)
+	return vaccineClient.getPrefix(rowKeyPrefix)
 }
 
-func (vaccineClient *VaccineClient) CreateOrUpdateReservation(ID string, attributes map[string]string) error {
-	return vaccineClient.CreateOrUpdate("reservation#"+ID, "reservation", attributes)
+func (vaccineClient *VaccineClient) DeleteHospital(ID string, county string, township string) error {
+	rowKey := fmt.Sprintf("hospital#%s#%s#%s", county, township, ID)
+	return vaccineClient.delete(rowKey)
 }
 
-func (vaccineClient *VaccineClient) GetReservation(ID string) (bigtable.Row, error) {
-	return vaccineClient.get("reservation#" + ID)
+func (vaccineClient *VaccineClient) CreateOrUpdateReservation(ID string, userID string, attributes map[string]string) error {
+	rowKey := fmt.Sprintf("reservation#%s#%s", userID, ID)
+	return vaccineClient.createOrUpdate(rowKey, "reservation", attributes)
 }
 
-func (vaccineClient *VaccineClient) DeleteReservation(ID string) error {
-	return vaccineClient.delete("reservation#" + ID)
+func (vaccineClient *VaccineClient) GetReservation(ID string, userID string) (bigtable.Row, error) {
+	rowKey := fmt.Sprintf("reservation#%s#%s", userID, ID)
+	return vaccineClient.get(rowKey)
+}
+
+func (vaccineClient *VaccineClient) GetReservations(userID string) ([]bigtable.Row, error) {
+	rowKeyPrefix := fmt.Sprintf("reservation#%s", userID)
+	return vaccineClient.getPrefix(rowKeyPrefix)
+}
+
+func (vaccineClient *VaccineClient) DeleteReservation(ID string, userID string) error {
+	rowKey := fmt.Sprintf("reservation#%s#%s", userID, ID)
+	return vaccineClient.delete(rowKey)
 }
