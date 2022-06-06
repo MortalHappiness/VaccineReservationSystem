@@ -1,0 +1,2 @@
+ID,userID,hospitalID,vaccineType,datetime,completed
+1,A123456789,1,BNT,1654524434,1
