@@ -10,9 +10,17 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { ReservationAPI } from "../api";
 
-const rows = [];
-export default function ReservationStatus() {
+export default function ReservationStatus(props) {
+  const cancelReservation = (reservationID) => {
+    ReservationAPI.deleteReservation(reservationID)
+      .then((res) => {
+        props.setUserReservations(userReservations.filter(ele.id !== res.id));
+      })
+      .catch();
+  };
   return (
     <>
       <Box
@@ -55,20 +63,31 @@ export default function ReservationStatus() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
-              </TableRow>
-            ))}
+            {props.userReservations && props.userReservations.length > 0 ? (
+              props.userReservations.map((row) => (
+                <TableRow
+                  key={row.date}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.name}
+                  </TableCell>
+                  <TableCell align="right">{row.hospital}</TableCell>
+                  <TableCell align="right">{row.address}</TableCell>
+                  <TableCell align="right">{row.vaccinetype}</TableCell>
+                  <TableCell
+                    align="right"
+                    onClick={() =>
+                      cancelReservation(props.user.nationID, row.id)
+                    }
+                  >
+                    <CancelIcon />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <></>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

@@ -15,6 +15,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
+import { HospitalAPI, ReservationAPI } from "../api";
 
 export default function ReservationSearch() {
   const area_data = {
@@ -410,6 +411,9 @@ export default function ReservationSearch() {
   const handleChange = (event) => {
     setCounty(event.target.value);
   };
+  const handleSearch = () => {
+    HospitalAPI.getHospital();
+  };
   return (
     <>
       <Box
@@ -447,6 +451,7 @@ export default function ReservationSearch() {
           sx={{
             mx: 1,
           }}
+          onClick={handleSearch}
         >
           查詢
         </Button>

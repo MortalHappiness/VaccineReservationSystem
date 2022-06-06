@@ -14,21 +14,27 @@ import Container from "@mui/material/Container";
 import Modal from "@mui/material/Modal";
 import Paper from "@mui/material/Paper";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { SessionAPI } from "../api";
 const theme = createTheme();
 export default function Login(props) {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(data.get("nationalId"), data.get("healthCardId"));
-    //TODO handle user info and session
-    // if (success) {
-    //     handleClose();
-    // } else {
-    // }
-  };
   const handleClose = () => {
     props.setLoginOpen(false);
   };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log(data.get("nationID"), data.get("healthCardID"));
+    SessionAPI.createSession(data.get("nationID"), data.get("healthCardID"))
+      .then((res) => {
+        props.setUser(res);
+        handleClose();
+      })
+      .catch((err) => {
+        //TODO
+        // show error
+      });
+  };
+
   return (
     <>
       <Modal
@@ -77,20 +83,20 @@ export default function Login(props) {
                     margin="normal"
                     required
                     fullWidth
-                    id="nationalId"
+                    id="nationID"
                     label="身分證字號"
-                    name="nationalId"
-                    autoComplete="nationalId"
+                    name="nationID"
+                    autoComplete="nationID"
                     autoFocus
                   />
                   <TextField
                     margin="normal"
                     required
                     fullWidth
-                    name="healthCardId"
+                    name="healthCardID"
                     label="健保卡號碼"
-                    id="healthCardId"
-                    autoComplete="healthCardId"
+                    id="healthCardID"
+                    autoComplete="healthCardID"
                   />
                   {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

@@ -10,7 +10,6 @@ import Login from "./Pages/Login";
 
 export default function NavigationBar(props) {
   return (
-    // <Box sx={{ flexGrow: 1 }}>
     <AppBar position="fixed">
       <Toolbar>
         <IconButton
@@ -25,12 +24,22 @@ export default function NavigationBar(props) {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           疫苗系統
         </Typography>
-        <Button color="inherit" onClick={() => props.setLoginOpen(true)}>
-          登入
-        </Button>
-        <Login open={props.loginOpen} setLoginOpen={props.setLoginOpen} />
+        {props.user === null ? (
+          <Button color="inherit" onClick={() => props.setLoginOpen(true)}>
+            登入
+          </Button>
+        ) : (
+          <Button color="inherit" onClick={() => props.setUser(null)}>
+            {props.user.name}
+          </Button>
+          // TODO logout button
+        )}
+        <Login
+          open={props.loginOpen}
+          setLoginOpen={props.setLoginOpen}
+          setUser={props.setUser}
+        />
       </Toolbar>
     </AppBar>
-    // </Box>
   );
 }
