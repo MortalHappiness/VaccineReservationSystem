@@ -64,8 +64,12 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-20220607040224-64c294a92285 h1:5dXcaw8RHtVyoexvfY810cO5Q5/ds3ESwJrwtwO2bmI=
 github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-20220607040224-64c294a92285/go.mod h1:39JOW0CKiGYPZDAXqEnpgZOpydyjuy6/ULWLjalKD+8=
+github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-20220607105523-1161196249c8 h1:Y4/GaVjYCJ7dEiXOfWYlo0K2188uNlnsp7W7BGn2VpM=
+github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-20220607105523-1161196249c8/go.mod h1:39JOW0CKiGYPZDAXqEnpgZOpydyjuy6/ULWLjalKD+8=
 github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607055617-fd3f0bad7931 h1:gV9NxDqbbU1Yk9E9p2lCvduhdcZyBB6mu9irii6ckyg=
 github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607055617-fd3f0bad7931/go.mod h1:QAUVNUuTm3545UfaWhMoUxVRuS0iahbNs5miey/rw28=
+github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607105523-1161196249c8 h1:fxhWTJIW/54tArNCMXdRzklP36itoEph8cGfY9ZLLI4=
+github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607105523-1161196249c8/go.mod h1:QAUVNUuTm3545UfaWhMoUxVRuS0iahbNs5miey/rw28=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
@@ -116,6 +120,8 @@ github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE
 github.com/gin-contrib/sse v0.1.0/go.mod h1:RHrZQHXnP2xjPF+u1gW/2HnVO7nvIa9PG3Gm+fLHvGI=
 github.com/gin-gonic/gin v1.8.0 h1:4WFH5yycBMA3za5Hnl425yd9ymdw1XPm4666oab+hv4=
 github.com/gin-gonic/gin v1.8.0/go.mod h1:ji8BvRH1azfM+SYow9zQ6SZMvR8qOMZHmsCuWR9tTTk=
+github.com/gin-gonic/gin v1.8.1 h1:4+fr/el88TOO3ewCmQr8cx/CtZ/umlIRIs5M4NTNjf8=
+github.com/gin-gonic/gin v1.8.1/go.mod h1:ji8BvRH1azfM+SYow9zQ6SZMvR8qOMZHmsCuWR9tTTk=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
@@ -311,6 +317,8 @@ golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97/go.mod h1:GvvjBRRGRdwPK5y
 golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
 golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898 h1:SLP7Q4Di66FONjDJbCYrCRrh97focO6sLogHO7/g8F0=
 golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
+golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e h1:T8NU3HyQ8ClP4SEE+KbFlg6n0NhuTsN4MyznaarGsZM=
+golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190306152737-a1d7652674e8/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190510132918-efd6b22b2522/go.mod h1:ZjyILWgesfNpC6sMxTJOJm9Kp84zZh5NQWvqDGG3Qr8=
