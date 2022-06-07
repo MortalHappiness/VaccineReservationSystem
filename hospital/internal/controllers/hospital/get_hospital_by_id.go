@@ -13,6 +13,17 @@ import (
 // swagger:route GET /api/hospitals/:hospitalID Hospital GetHospitalByID
 //
 // Get the hospital information by id.
+// Parameters:
+//   + name: county
+//     in: query
+//     description: the county of the hospital
+//     required: true
+//     type: string
+//   + name: township
+//     in: query
+//     description: the township of the hospital
+//     required: true
+//     type: string
 //
 // Responses:
 //   200: HospitalResponse
@@ -21,9 +32,19 @@ import (
 //   500: InternalServerErrorResponse
 //
 func (u *Hospital) GetHospitalByID(c *gin.Context) {
+	county := c.Query("county")
+	if county == "" {
+		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("county is empty")))
+		return
+	}
+	township := c.Query("township")
+	if township == "" {
+		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("township is empty")))
+		return
+	}
 	id := c.Param("hospitalID")
 	// get hospital info
-	row, err := u.vaccineClient.GetHospital(id)
+	row, err := u.vaccineClient.GetHospital(id, county, township)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to get hospital: %w", err)))
 		return

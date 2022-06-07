@@ -42,19 +42,27 @@ func (u *Hospital) GetHospital(c *gin.Context) {
 		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("township is empty")))
 		return
 	}
-
-	// TODO: Get the hospital information
-	model := models.HospitalModel{
-		Name:     "Taipei City Hospital Heping Fuyou Branch",
-		ID:       "0001",
-		County:   "臺北市",
-		Township: "中正區",
-		Address:  "No.33, Sec. 2, Zhonghua Rd., Zhongzheng Dist., Taipei City 100058, Taiwan (R.O.C.)",
-		VaccineCnt: map[string]int{
-			"BNT": 100,
-			"AZ":  200,
-		},
+	// get hospitals
+	rows, err := u.vaccineClient.GetHospitals(county, township)
+	if err != nil {
+		_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to get hospitals: %w", err)))
+		return
+	}
+	if len(rows) == 0 {
+		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("no hospital found")))
+		return
+	}
+	hospitals := []models.HospitalModel{}
+	for _, row := range rows {
+		// parse row key ID
+		hospital := &models.HospitalModel{}
+		hospital, err = models.ConvertRowToHospitalModel(row.Key(), row)
+		if err != nil {
+			_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to convert row to hospital: %w", err)))
+			return
+		}
+		hospitals = append(hospitals, *hospital)
 	}
 
-	c.JSON(http.StatusOK, model)
+	c.JSON(http.StatusOK, hospitals)
 }

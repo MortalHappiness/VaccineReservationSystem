@@ -20,8 +20,8 @@ func MakeRouter(opt *Options) *gin.Engine {
 	{
 		api.Use(opt.errorCollectorMiddleware)
 		api.Use(opt.authMiddleware)
-		api.GET("/reservations/:reservationID", opt.reservationController.GetReservationByID)
 		api.GET("/reservations/users/:nationID", opt.reservationController.GetReservation)
+		api.GET("/reservations/users/:nationID/:reservationID", opt.reservationController.GetReservationByID)
 		api.POST("/reservations/users/:nationID", opt.reservationController.PostReservation)
 		api.PUT("/reservations/users/:nationID/:reservationID", opt.reservationController.PutReservation)
 		api.DELETE("/reservations/users/:nationID/:reservationID", opt.reservationController.DeleteReservation)

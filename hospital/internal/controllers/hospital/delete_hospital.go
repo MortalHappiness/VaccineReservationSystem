@@ -12,6 +12,17 @@ import (
 // swagger:route DELETE /api/hospitals/:hospitalID Hospital DeleteHospital
 //
 // Delete the hospital by id.
+// Parameters:
+//   + name: county
+//     in: query
+//     description: the county of the hospital
+//     required: true
+//     type: string
+//   + name: township
+//     in: query
+//     description: the township of the hospital
+//     required: true
+//     type: string
 //
 // Responses:
 //   200: DeleteHospital hospitalID
@@ -19,6 +30,16 @@ import (
 //   500: InternalServerErrorResponse
 //
 func (u *Hospital) DeleteHospital(c *gin.Context) {
+	county := c.Query("county")
+	if county == "" {
+		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("county is empty")))
+		return
+	}
+	township := c.Query("township")
+	if township == "" {
+		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("township is empty")))
+		return
+	}
 	hospitalID := c.Param("hospitalID")
 	if hospitalID == "" {
 		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("hospital id is empty")))
@@ -26,7 +47,7 @@ func (u *Hospital) DeleteHospital(c *gin.Context) {
 	}
 
 	// delete hospital
-	err := u.vaccineClient.DeleteHospital(hospitalID)
+	err := u.vaccineClient.DeleteHospital(hospitalID, county, township)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(err))
 		return

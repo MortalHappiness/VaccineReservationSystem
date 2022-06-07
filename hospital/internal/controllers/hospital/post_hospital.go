@@ -28,7 +28,7 @@ func (u *Hospital) PostHospital(c *gin.Context) {
 
 	// add hospital
 	attributes := models.ConvertHospitalModelToAttributes(&model)
-	err = u.vaccineClient.CreateOrUpdateHospital(model.ID, attributes)
+	err = u.vaccineClient.CreateOrUpdateHospital(model.ID, model.County, model.Township, attributes)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(err))
 		return

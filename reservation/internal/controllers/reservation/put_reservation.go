@@ -36,7 +36,7 @@ func (u *Reservation) PutReservation(c *gin.Context) {
 
 	// add reservation information to bigtable
 	attributes := models.ConvertReservationModelToAttributes(&model)
-	err = u.vaccineClient.CreateOrUpdateReservation(model.ID, attributes)
+	err = u.vaccineClient.CreateOrUpdateReservation(model.ID, nationID, attributes)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(err))
 		return

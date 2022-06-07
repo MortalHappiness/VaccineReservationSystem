@@ -28,7 +28,7 @@ func (u *Reservation) DeleteReservation(c *gin.Context) {
 
 	reservationID := c.Param("reservationID")
 	// delete reservation information from bigtable'
-	err = u.vaccineClient.DeleteReservation(reservationID)
+	err = u.vaccineClient.DeleteReservation(reservationID, nationID)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(err))
 		return

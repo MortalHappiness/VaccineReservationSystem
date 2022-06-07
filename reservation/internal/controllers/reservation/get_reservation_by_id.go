@@ -10,7 +10,7 @@ import (
 )
 
 // GetReservationByID returns the reservation information.
-// swagger:route GET /api/reservations/:reservationID Reservation GetReservation
+// swagger:route GET /api/reservations/users/:nationID/:reservationID Reservation GetReservation
 //
 // Get the reservation information by reservation id.
 //
@@ -22,10 +22,17 @@ import (
 //   500: InternalServerErrorResponse
 //
 func (u *Reservation) GetReservationByID(c *gin.Context) {
+	nationID := c.Param("nationID")
+	err := AuthVerify(c, nationID)
+	if err != nil {
+		_ = c.Error(apierrors.NewUnauthorizedError(err))
+		return
+	}
+
 	reservationID := c.Param("reservationID")
 
 	// get reservation info
-	row, err := u.vaccineClient.GetReservation(reservationID)
+	row, err := u.vaccineClient.GetReservation(reservationID, nationID)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to get reservation: %w", err)))
 		return
@@ -35,7 +42,7 @@ func (u *Reservation) GetReservationByID(c *gin.Context) {
 		return
 	}
 
-	reservation, err := models.ConvertRowToReservationModel(reservationID, row)
+	reservation, err := models.ConvertRowToReservationModel(row.Key(), row)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to convert row to reservation: %w", err)))
 		return
@@ -68,7 +75,8 @@ func (u *Reservation) GetReservationByID(c *gin.Context) {
 	reservation.User = user
 
 	// get hospital info
-	hospitalRow, err := u.vaccineClient.GetHospital(reservation.Hospital.ID)
+	hospitalRow, err := u.vaccineClient.GetHospital(
+		reservation.Hospital.ID, reservation.Hospital.County, reservation.Hospital.Township)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to get hospital: %w", err)))
 		return
