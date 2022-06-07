@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -37,18 +38,28 @@ type ReservationModel struct {
 	Completed bool `json:"completed"`
 }
 
-func ConvertRowToReservationModel(ID string, row bigtable.Row) (*ReservationModel, error) {
+func ConvertRowToReservationModel(rowKey string, row bigtable.Row) (*ReservationModel, error) {
+	// parse rowKey
+	rowKeyParts := strings.Split(rowKey, "#")
+	if len(rowKeyParts) != 3 {
+		return nil, fmt.Errorf("invalid rowKey %s", rowKey)
+	}
+
 	reservation := &ReservationModel{
-		ID:       ID,
-		User:     &UserModel{},
+		ID: rowKeyParts[2],
+		User: &UserModel{
+			NationID: rowKeyParts[1],
+		},
 		Hospital: &HospitalModel{},
 	}
 
 	for _, col := range row["reservation"] {
 		qualifier := col.Column[strings.IndexByte(col.Column, ':')+1:]
 		switch qualifier {
-		case "userID":
-			reservation.User.NationID = string(col.Value)
+		case "county":
+			reservation.Hospital.County = string(col.Value)
+		case "township":
+			reservation.Hospital.Township = string(col.Value)
 		case "hospitalID":
 			reservation.Hospital.ID = string(col.Value)
 		case "vaccineType":
@@ -65,11 +76,14 @@ func ConvertRowToReservationModel(ID string, row bigtable.Row) (*ReservationMode
 
 func ConvertReservationModelToAttributes(reservation *ReservationModel) map[string]string {
 	attributes := map[string]string{}
-	if reservation.User != nil {
-		attributes["userID"] = reservation.User.NationID
-	}
 	if reservation.Hospital != nil {
 		attributes["hospitalID"] = reservation.Hospital.ID
+		if reservation.Hospital.County != "" {
+			attributes["county"] = reservation.Hospital.County
+		}
+		if reservation.Hospital.Township != "" {
+			attributes["township"] = reservation.Hospital.Township
+		}
 	}
 	if reservation.VaccineType != "" {
 		attributes["vaccineType"] = reservation.VaccineType
