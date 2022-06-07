@@ -106,7 +106,9 @@ func (vaccineClient *VaccineClient) getPrefix(rowKeyPrefix string) ([]bigtable.R
 		func(row bigtable.Row) bool {
 			rows = append(rows, row)
 			return true
-		})
+		},
+		bigtable.RowFilter(bigtable.LatestNFilter(1)))
+
 	if err != nil {
 		return nil, fmt.Errorf("could not read rows with prefix %s: %w", rowKeyPrefix, err)
 	}
