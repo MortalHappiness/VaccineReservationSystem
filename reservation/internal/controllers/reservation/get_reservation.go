@@ -57,7 +57,7 @@ func (u *Reservation) GetReservation(c *gin.Context) {
 			_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("user %s not found", reservation.User.NationID)))
 			return
 		}
-		reservation.User, err = models.ConvertRowToUserModel(userRow.Key(), userRow)
+		reservation.User, err = models.ConvertRowToUserModel(reservation.User.NationID, userRow)
 		if err != nil {
 			_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to convert row to user: %w", err)))
 			return
@@ -74,7 +74,7 @@ func (u *Reservation) GetReservation(c *gin.Context) {
 			_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("hospital %s not found", reservation.Hospital.ID)))
 			return
 		}
-		hospital, err := models.ConvertRowToHospitalModel(reservation.Hospital.ID, hospitalRow)
+		hospital, err := models.ConvertRowToHospitalModel(hospitalRow.Key(), hospitalRow)
 		if err != nil {
 			_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to convert row to hospital: %w", err)))
 			return

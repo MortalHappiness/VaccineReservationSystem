@@ -85,7 +85,7 @@ func (u *Reservation) GetReservationByID(c *gin.Context) {
 		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("hospital %s not found", reservation.Hospital.ID)))
 		return
 	}
-	hospital, err := models.ConvertRowToHospitalModel(reservation.Hospital.ID, hospitalRow)
+	hospital, err := models.ConvertRowToHospitalModel(hospitalRow.Key(), hospitalRow)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to convert row to hospital: %w", err)))
 		return
