@@ -112,9 +112,7 @@ export default function ReservationSearch({ user }) {
   // return vaccines that left > 0
   const getVaccineType = (vaccineCnt) => {
     if (!vaccineCnt) return [];
-    return Object.entries(vaccineCnt).map(([key, value]) => {
-      if (value > 0) return key;
-    });
+    return Object.keys(vaccineCnt).filter((key) => vaccineCnt[key] > 0);
   };
 
   return (
@@ -170,24 +168,26 @@ export default function ReservationSearch({ user }) {
         </Button>
       </Box>
       {hospitals.length > 0 &&
-        hospitals.map((hosp) => (
-          <Card key={hosp.id} variant="outlined" sx={{ mb: 2 }}>
-            <CardContent>
-              <Typography variant="h5" component="h2">
-                {hosp.name}
-              </Typography>
-              <Typography variant="body2" component="p">
-                {hosp.address}
-              </Typography>
-              <Typography variant="body2" component="p">
-                疫苗種類：{getVaccineType(hosp.vaccineCnt).join(", ")}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button onClick={() => handleOpenDialog(hosp)}>預約</Button>
-            </CardActions>
-          </Card>
-        ))}
+        hospitals
+          .filter((hosp) => getVaccineType(hosp.vaccineCnt) != "")
+          .map((hosp) => (
+            <Card key={hosp.id} variant="outlined" sx={{ mb: 2 }}>
+              <CardContent>
+                <Typography variant="h5" component="h2">
+                  {hosp.name}
+                </Typography>
+                <Typography variant="body2" component="p">
+                  {hosp.address}
+                </Typography>
+                <Typography variant="body2" component="p">
+                  疫苗種類：{getVaccineType(hosp.vaccineCnt).join(", ")}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button onClick={() => handleOpenDialog(hosp)}>預約</Button>
+              </CardActions>
+            </Card>
+          ))}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={alert?.open}
