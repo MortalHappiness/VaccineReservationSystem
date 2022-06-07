@@ -31,7 +31,7 @@ function App() {
     // 使用瀏覽器 API 更新文件標題
     if (user !== null) {
       ReservationAPI.getReservation(user.nationID)
-        .then((res) => setUserReservations([res]))
+        .then((res) => setUserReservations(res))
         .catch
         //TODO error
         ();
@@ -54,6 +54,7 @@ function App() {
         setLoginOpen={setLoginOpen}
         user={user}
         setUser={setUser}
+        setUserReservations={setUserReservations}
       />
       <Sidebar />
 

@@ -26,6 +26,7 @@ export default function ReservationStatus(props) {
       .catch();
   };
   useEffect(() => {
+    console.log(props.userReservations);
     if (props.userReservations) {
       setCompletedReservation(
         props.userReservations.filter((ele) => ele.completed === true)
@@ -37,7 +38,7 @@ export default function ReservationStatus(props) {
       setCompletedReservation([]);
       setUnfinishedReservation([]);
     }
-  }, []);
+  }, [props.userReservations]);
   return (
     <>
       {/* <Box

@@ -25,6 +25,7 @@ export default function NavigationBar(props) {
       .then((res) => {
         setAnchorEl(null);
         props.setUser(null);
+        props.setUserReservations([]);
       })
       .catch();
   };
