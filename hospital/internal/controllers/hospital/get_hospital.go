@@ -47,8 +47,8 @@ func (u *Hospital) GetHospital(c *gin.Context) {
 	model := models.HospitalModel{
 		Name:     "Taipei City Hospital Heping Fuyou Branch",
 		ID:       "0001",
-		County:   "Taipei",
-		Township: "Zhongzheng District",
+		County:   "臺北市",
+		Township: "中正區",
 		Address:  "No.33, Sec. 2, Zhonghua Rd., Zhongzheng Dist., Taipei City 100058, Taiwan (R.O.C.)",
 		VaccineCnt: map[string]int{
 			"BNT": 100,

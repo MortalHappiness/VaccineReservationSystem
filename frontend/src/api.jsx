@@ -74,8 +74,8 @@ export const HospitalAPI = {
   getHospital: (county, township) =>
     hospitalRequest({
       method: "get",
-      url: `/api/hospitals/`,
-      param: {
+      url: `/api/hospitals`,
+      params: {
         county,
         township,
       },
