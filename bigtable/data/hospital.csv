@@ -1,4 +1,4 @@
 ID,county,township,name,address,vaccineCnt
-1,臺北市,中正區,"Hospital 1","example address 1","{BNT:1,AZ:2}"
-2,臺北市,中正區,"Hospital 2","example address 2","{BNT:2,AZ:2}"
-3,臺北市,大安區,"Hospital 3","example address 3","{Moderna:1,AZ:2}"
+1,臺北市,中正區,"Hospital 1","example address 1","{""BNT"":1,""AZ"":2}"
+2,臺北市,中正區,"Hospital 2","example address 2","{""BNT"":2,""AZ"":2}"
+3,臺北市,大安區,"Hospital 3","example address 3","{""Moderna"":1,""AZ"":2}"
