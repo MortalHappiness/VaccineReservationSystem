@@ -5,13 +5,20 @@ on: push
 jobs:
   bigtable:
     runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: vaccine-reservation-system
+      INSTANCE_ID: instance-1
+      TABLE_NAME: vaccine-reservation-system
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+    defaults:
+      run:
+        working-directory: github.com/${GITHUB_REPOSITORY}/bigtable
     steps:
     - name: Setup Golang 1.17.2
       uses: actions/setup-go@v2
       with:
         go-version: "1.17.2"
-    - name: echo path
-      run: echo github.com/${GITHUB_REPOSITORY}/bigtable
-    # - name: Install golang packages
-    #   working-directory: github.com/${GITHUB_REPOSITORY}/bigtable
-    #   run: go mod tidy
+    - name: Install golang packages
+      run: go mod tidy
+    - name: Setup bigtable
+      run: go run main.go
