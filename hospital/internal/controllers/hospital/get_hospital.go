@@ -26,7 +26,7 @@ import (
 //     type: string
 //
 // Responses:
-//   200: HospitalResponse
+//   200: GetHospitalResponse
 //	 400: BadRequestErrorResponse
 //   404: NotFoundErrorResponse
 //   500: InternalServerErrorResponse
@@ -65,4 +65,13 @@ func (u *Hospital) GetHospital(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, hospitals)
+}
+
+// GetHospitalResponse is the response of GetHospital
+//
+// swagger:response GetHospitalResponse
+type GetHospitalResponse struct {
+	// in: body
+	// required: true
+	Hospital []*models.HospitalModel `json:"hospital"`
 }

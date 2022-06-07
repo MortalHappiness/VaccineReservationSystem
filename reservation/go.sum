@@ -66,10 +66,14 @@ github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-202206070402
 github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-20220607040224-64c294a92285/go.mod h1:39JOW0CKiGYPZDAXqEnpgZOpydyjuy6/ULWLjalKD+8=
 github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-20220607105523-1161196249c8 h1:Y4/GaVjYCJ7dEiXOfWYlo0K2188uNlnsp7W7BGn2VpM=
 github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-20220607105523-1161196249c8/go.mod h1:39JOW0CKiGYPZDAXqEnpgZOpydyjuy6/ULWLjalKD+8=
+github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-20220607172514-95e2be49046f h1:UTuc+FaNJGexIrI/i2hnL3uBz66SG/u27Ba+wdiSvYY=
+github.com/MortalHappiness/VaccineReservationSystem/bigtable v0.0.0-20220607172514-95e2be49046f/go.mod h1:1AONC/lSRqj/fJmQomn5enAQw46z5ZOldYJUC37xU1o=
 github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607055617-fd3f0bad7931 h1:gV9NxDqbbU1Yk9E9p2lCvduhdcZyBB6mu9irii6ckyg=
 github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607055617-fd3f0bad7931/go.mod h1:QAUVNUuTm3545UfaWhMoUxVRuS0iahbNs5miey/rw28=
 github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607105523-1161196249c8 h1:fxhWTJIW/54tArNCMXdRzklP36itoEph8cGfY9ZLLI4=
 github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607105523-1161196249c8/go.mod h1:QAUVNUuTm3545UfaWhMoUxVRuS0iahbNs5miey/rw28=
+github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607172514-95e2be49046f h1:xzLZ5vsdImfdwathtLxB0qCbea16KWDXs6sL+hQfx9E=
+github.com/MortalHappiness/VaccineReservationSystem/go-utils v0.0.0-20220607172514-95e2be49046f/go.mod h1:QAUVNUuTm3545UfaWhMoUxVRuS0iahbNs5miey/rw28=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
@@ -699,6 +703,8 @@ google.golang.org/genproto v0.0.0-20220523171625-347a074981d8/go.mod h1:RAyBrSAP
 google.golang.org/genproto v0.0.0-20220527130721-00d5c0f3be58/go.mod h1:yKyY4AMRwFiC8yMMNaMi+RkCnjZJt9LoWuvhXjMs+To=
 google.golang.org/genproto v0.0.0-20220602131408-e326c6e8e9c8 h1:qRu95HZ148xXw+XeZ3dvqe85PxH4X8+jIo0iRPKcEnM=
 google.golang.org/genproto v0.0.0-20220602131408-e326c6e8e9c8/go.mod h1:yKyY4AMRwFiC8yMMNaMi+RkCnjZJt9LoWuvhXjMs+To=
+google.golang.org/genproto v0.0.0-20220607140733-d738665f6195 h1:dp5xvm3zUH+xcW+Pv1o+1phiOKLVAUA4Y2zSmvDRiRA=
+google.golang.org/genproto v0.0.0-20220607140733-d738665f6195/go.mod h1:KEWEmljWE5zPzLBa/oHl6DaEt9LmfH6WtH1OHIvleBA=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.20.1/go.mod h1:10oTOabMzJvdu6/UiuZezV6QK5dSlG84ov/aaiqXj38=
 google.golang.org/grpc v1.21.1/go.mod h1:oYelfM1adQP15Ek0mdvEgi9Df8B9CZIaU1084ijfRaM=

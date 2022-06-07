@@ -119,7 +119,7 @@ paths:
         type: string
       responses:
         "200":
-          $ref: '#/responses/HospitalResponse'
+          $ref: '#/responses/GetHospitalResponse'
         "400":
           $ref: '#/responses/BadRequestErrorResponse'
         "404":
@@ -151,6 +151,17 @@ paths:
   /api/hospitals/:hospitalID:
     delete:
       operationId: DeleteHospital
+      parameters:
+      - description: the county of the hospital
+        in: query
+        name: county
+        required: true
+        type: string
+      - description: the township of the hospital
+        in: query
+        name: township
+        required: true
+        type: string
       responses:
         "200":
           $ref: '#/responses/DeleteHospital'
@@ -164,6 +175,17 @@ paths:
       - Hospital
     get:
       operationId: GetHospitalByID
+      parameters:
+      - description: the county of the hospital
+        in: query
+        name: county
+        required: true
+        type: string
+      - description: the township of the hospital
+        in: query
+        name: township
+        required: true
+        type: string
       responses:
         "200":
           $ref: '#/responses/HospitalResponse'
@@ -185,6 +207,16 @@ paths:
         schema:
           $ref: '#/definitions/HospitalModel'
         x-go-name: Hospital
+      - description: the county of the hospital
+        in: query
+        name: county
+        required: true
+        type: string
+      - description: the township of the hospital
+        in: query
+        name: township
+        required: true
+        type: string
       responses:
         "200":
           $ref: '#/responses/HospitalResponse'
@@ -202,6 +234,12 @@ responses:
     description: BadRequestErrorResponse is the response of bad request error.
     schema:
       $ref: '#/definitions/APIError'
+  GetHospitalResponse:
+    description: GetHospitalResponse is the response of GetHospital
+    schema:
+      items:
+        $ref: '#/definitions/HospitalModel'
+      type: array
   HospitalResponse:
     description: HospitalResponse is the response of GetHospital
     schema:

@@ -1,6 +1,7 @@
 package reservation
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/MortalHappiness/VaccineReservationSystem/go-utils/apierrors"
@@ -37,6 +38,37 @@ func (u *Reservation) PostReservation(c *gin.Context) {
 	// add reservation information to bigtable
 	attributes := models.ConvertReservationModelToAttributes(&model)
 	err = u.vaccineClient.CreateOrUpdateReservation(model.ID, nationID, attributes)
+	if err != nil {
+		_ = c.Error(apierrors.NewInternalServerError(err))
+		return
+	}
+
+	// should modify hositpal left capacity
+	// get hospital info
+	hospitalRow, err := u.vaccineClient.GetHospital(
+		model.Hospital.ID, model.Hospital.County, model.Hospital.Township)
+	if err != nil {
+		_ = c.Error(apierrors.NewInternalServerError(err))
+		return
+	}
+	if hospitalRow == nil {
+		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("hospital#%s#%s#%s not found",
+			model.Hospital.ID, model.Hospital.County, model.Hospital.Township)))
+		return
+	}
+	hospital, err := models.ConvertRowToHospitalModel(hospitalRow.Key(), hospitalRow)
+	if err != nil {
+		_ = c.Error(apierrors.NewInternalServerError(fmt.Errorf("failed to convert row to hospital: %w", err)))
+		return
+	}
+
+	if hospital.VaccineCnt[model.VaccineType] <= 0 {
+		_ = c.Error(apierrors.NewBadRequestError(fmt.Errorf("no vaccine left: %s", model.VaccineType)))
+		return
+	}
+	hospital.VaccineCnt[model.VaccineType]--
+	attributes = models.ConvertHospitalModelToAttributes(hospital)
+	err = u.vaccineClient.CreateOrUpdateHospital(hospital.ID, hospital.County, hospital.Township, attributes)
 	if err != nil {
 		_ = c.Error(apierrors.NewInternalServerError(err))
 		return
