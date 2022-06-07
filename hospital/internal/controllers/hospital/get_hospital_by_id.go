@@ -50,7 +50,7 @@ func (u *Hospital) GetHospitalByID(c *gin.Context) {
 		return
 	}
 	if row == nil {
-		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("hospital %s not found", id)))
+		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("hospital#%s#%s#%s not found", county, township, id)))
 		return
 	}
 	hospital, err := models.ConvertRowToHospitalModel(row.Key(), row)

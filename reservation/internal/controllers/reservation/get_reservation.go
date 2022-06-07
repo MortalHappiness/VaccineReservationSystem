@@ -35,7 +35,7 @@ func (u *Reservation) GetReservation(c *gin.Context) {
 		return
 	}
 	if len(rows) == 0 {
-		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("reservation %s not found", nationID)))
+		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("reservation of user %s not found", nationID)))
 		return
 	}
 
@@ -71,7 +71,8 @@ func (u *Reservation) GetReservation(c *gin.Context) {
 			return
 		}
 		if hospitalRow == nil {
-			_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("hospital %s not found", reservation.Hospital.ID)))
+			_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("hospital#%s#%s#%s not found",
+				reservation.Hospital.County, reservation.Hospital.Township, reservation.Hospital.ID)))
 			return
 		}
 		hospital, err := models.ConvertRowToHospitalModel(hospitalRow.Key(), hospitalRow)

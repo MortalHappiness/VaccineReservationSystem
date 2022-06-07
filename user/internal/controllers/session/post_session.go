@@ -35,7 +35,7 @@ func (s *Session) PostSession(c *gin.Context) {
 		return
 	}
 	if row == nil {
-		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("user %s not found", session.NationID)))
+		_ = c.Error(apierrors.NewNotFoundError(fmt.Errorf("user#%s not found", session.NationID)))
 		return
 	}
 	user, err := models.ConvertRowToUserModel(session.NationID, row)
