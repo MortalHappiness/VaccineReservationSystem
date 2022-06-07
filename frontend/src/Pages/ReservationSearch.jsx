@@ -1,68 +1,120 @@
-import { useState, useEffect } from "react";
-import InputLabel from "@mui/material/InputLabel";
+import { useState } from "react";
+// mui
 import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Snackbar, Alert } from "@mui/material";
-import Paper from "@mui/material/Paper";
+import Container from "@mui/material/Container";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import TextField from "@mui/material/TextField";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+// api
 import { HospitalAPI, ReservationAPI } from "../api";
-import { createTheme } from "@mui/material";
-import { area_data, initHospitalData } from "../AreaData";
-import useSWR from "swr";
+// utils
+import { v4 as uuidv4 } from "uuid";
+import { areaData } from "../utils/AreaData";
 
-export default function ReservationSearch() {
-  const theme = createTheme({
-    subject: {
-      my: 2,
-    },
-  });
+export default function ReservationSearch({ user }) {
+  // form input
+  const [county, setCounty] = useState("");
+  const [township, setTownship] = useState("");
+  const handleChangeCounty = (event) => {
+    setCounty(event.target.value);
+    setTownship("");
+  };
+  const handleChangeTownship = (event) => {
+    setTownship(event.target.value);
+  };
+  const counties = Object.keys(areaData);
+  const townships = areaData[county] || [];
 
-  const counties = Object.keys(area_data);
-  const [county, setCounty] = useState(counties[0]);
+  // search
   const [alert, setAlert] = useState({});
-
-  const { data, error } = useSWR(
-    [county, area_data[county][0]],
-    HospitalAPI.getHospital
-  );
-  const [hospitalData, setHospitalData] = useState(initHospitalData);
-  useEffect(() => {
-    // console.log("data:", data);
-
-    // console.log("ERR:", error);
-    if (error) {
+  const [hospitals, setHospitals] = useState([]);
+  const handleSearch = async () => {
+    if (county == "" || township == "") {
+      return;
+    }
+    try {
+      const res = await HospitalAPI.getHospital(county, township);
+      setHospitals(res);
+    } catch (err) {
       setAlert({
+        severity: "warning",
+        msg: err.message,
         open: true,
-        severity: "error",
-        msg: error,
       });
     }
-    // TODO data change to array
-    if (data !== undefined) {
-      console.log(data);
-      let newHospitalData = hospitalData;
-      newHospitalData[data.county][data.township] = [data];
-      setHospitalData(newHospitalData);
-    }
-  }, [county, data]);
-
-  const handleChange = (event) => {
-    setCounty(event.target.value);
   };
 
-  const handleSearch = () => {
-    HospitalAPI.getHospital();
+  // reservation dialog
+  const [hospital, setHospital] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
+  const [vaccineType, setVaccineType] = useState("");
+  const [date, setDate] = useState(null);
+  const handleOpenDialog = (hosp) => {
+    setHospital(hosp);
+    setOpenDialog(true);
+    setVaccineType("");
+    setDate(null);
+  };
+  const handleCloseDialog = () => setOpenDialog(false);
+
+  const handleChangeVaccineType = (event) => {
+    setVaccineType(event.target.value);
+  };
+  const handleChangeDate = (d) => {
+    setDate(d);
+  };
+  const handleReservation = async () => {
+    if (vaccineType == "" || date == null) {
+      return;
+    }
+    try {
+      const res = await ReservationAPI.createReservation({
+        id: uuidv4(),
+        user,
+        hospital,
+        date: date.unix(),
+        completed: false,
+        vaccineType,
+      });
+      setAlert({
+        severity: "success",
+        msg: "預約成功",
+        open: true,
+      });
+    } catch (err) {
+      setAlert({
+        severity: "error",
+        msg: err.message,
+        open: true,
+      });
+    }
+    setOpenDialog(false);
+  };
+
+  // utils
+  // return vaccines that left > 0
+  const getVaccineType = (vaccineCnt) => {
+    if (!vaccineCnt) return [];
+    return Object.entries(vaccineCnt).map(([key, value]) => {
+      if (value > 0) return key;
+    });
   };
 
   return (
@@ -76,42 +128,37 @@ export default function ReservationSearch() {
           mb: 1,
         }}
       >
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          open={alert?.open}
-          autoHideDuration={3000}
-          onClose={() => setAlert({ ...alert, open: false })}
-        >
-          <Alert variant="filled" severity={alert?.severity}>
-            {alert?.msg}
-            {
-              <Button color="inherit" size="small" onClick={alert?.action}>
-                Ok
-              </Button>
-            }
-          </Alert>
-        </Snackbar>
         <Typography>縣市：</Typography>
         <FormControl sx={{ mr: 1 }}>
           <Select
             value={county}
-            onChange={handleChange}
+            onChange={handleChangeCounty}
             displayEmpty
-            sx={{ mx: 1, height: 40 }}
+            sx={{ mx: 1, height: 40, width: 100 }}
           >
             {counties.map((ele) => (
-              <MenuItem
-                key={ele}
-                value={ele}
-                sx={{
-                  fontSize: 8,
-                }}
-              >
+              <MenuItem key={ele} value={ele}>
                 {ele}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
+        <Typography>鄉鎮市區：</Typography>
+        <FormControl sx={{ mr: 1 }}>
+          <Select
+            value={township}
+            onChange={handleChangeTownship}
+            displayEmpty
+            sx={{ mx: 1, height: 40, width: 100 }}
+          >
+            {townships.map((ele) => (
+              <MenuItem key={ele} value={ele}>
+                {ele}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <Button
           variant="contained"
           sx={{
@@ -122,31 +169,78 @@ export default function ReservationSearch() {
           查詢
         </Button>
       </Box>
-      {area_data[county].map((township) => {
-        return (
-          <Box key={township}>
-            <Typography sx={theme.subject}>{township}</Typography>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableBody>
-                  {hospitalData[county][township].length > 0 &&
-                    hospitalData[county][township].map((hospital) => (
-                      <TableRow sx={{ height: 20 }} key={hospital.name}>
-                        <TableCell>{hospital.name}</TableCell>
-                        <TableCell align="right">
-                          {Object.keys(hospital.vaccineCnt)}
-                        </TableCell>
-                        <TableCell align="right">
-                          {hospital.vaccineCnt["BNT"]}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        );
-      })}
+      {hospitals.length > 0 &&
+        hospitals.map((hosp) => (
+          <Card key={hosp.id} variant="outlined" sx={{ mb: 2 }}>
+            <CardContent>
+              <Typography variant="h5" component="h2">
+                {hosp.name}
+              </Typography>
+              <Typography variant="body2" component="p">
+                {hosp.address}
+              </Typography>
+              <Typography variant="body2" component="p">
+                疫苗種類：{getVaccineType(hosp.vaccineCnt).join(", ")}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button onClick={() => handleOpenDialog(hosp)}>預約</Button>
+            </CardActions>
+          </Card>
+        ))}
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={alert?.open}
+        autoHideDuration={1000}
+        onClose={() => setAlert({ ...alert, open: false })}
+      >
+        <Alert variant="filled" severity={alert?.severity}>
+          {alert?.msg}
+        </Alert>
+      </Snackbar>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>預約</DialogTitle>
+        <DialogContent>
+          <DialogContentText>醫院: {hospital.name}</DialogContentText>
+          <DialogContentText>地址: {hospital.address}</DialogContentText>
+
+          <FormControl fullWidth sx={{ mt: 2 }} size="small">
+            <InputLabel id="vaccine-type-label">疫苗種類</InputLabel>
+            <Select
+              labelId="vaccine-type-label"
+              value={vaccineType}
+              onChange={handleChangeVaccineType}
+              displayEmpty
+              label="疫苗種類"
+            >
+              {getVaccineType(hospital.vaccineCnt).map((ele) => (
+                <MenuItem key={ele} value={ele}>
+                  {ele}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DateTimePicker
+                label="預約時間"
+                value={date}
+                onChange={handleChangeDate}
+                disablePast
+                renderInput={(params) => <TextField {...params} size="small" />}
+              />
+            </LocalizationProvider>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            取消
+          </Button>
+          <Button onClick={handleReservation} color="primary">
+            預約
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

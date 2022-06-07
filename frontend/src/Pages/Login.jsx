@@ -1,133 +1,68 @@
 import { useState } from "react";
-import Avatar from "@mui/material/Avatar";
+// mui
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Modal from "@mui/material/Modal";
-import Paper from "@mui/material/Paper";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+// api
 import { SessionAPI } from "../api";
-const theme = createTheme();
-export default function Login(props) {
-  const handleClose = () => {
-    props.setLoginOpen(false);
-  };
-  const handleSubmit = (event) => {
+
+export default function Login({ setIsLogin, setUser }) {
+  const [nationID, setNationID] = useState("");
+  const [healthCardID, setHealthCardID] = useState("");
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(data.get("nationID"), data.get("healthCardID"));
-    SessionAPI.createSession(data.get("nationID"), data.get("healthCardID"))
-      .then((res) => {
-        props.setUser(res);
-        handleClose();
-      })
-      .catch((err) => {
-        //TODO
-        // show error
-      });
+    const user = await SessionAPI.createSession(nationID, healthCardID);
+    setUser(user);
+    setIsLogin(true);
   };
 
   return (
-    <>
-      <Modal
-        open={props.open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+    <Container component="main" maxWidth="xs" bgcolor="white">
+      <Box
         sx={{
+          marginTop: 4,
           display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <ThemeProvider theme={theme}>
-          <Paper
-            sx={{
-              maxWidth: 500,
-              maxHeight: 400,
-              mx: 40,
-              mt: 10,
-            }}
-          >
-            <Container component="main" maxWidth="xs" bgcolor="white">
-              <CssBaseline />
-              <Box
-                sx={{
-                  marginTop: 4,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar> */}
-                <Typography component="h1" variant="h5">
-                  登入
-                </Typography>
-                <Box
-                  component="form"
-                  noValidate
-                  sx={{ mt: 1 }}
-                  onSubmit={handleSubmit}
-                >
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="nationID"
-                    label="身分證字號"
-                    name="nationID"
-                    autoComplete="nationID"
-                    autoFocus
-                  />
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="healthCardID"
-                    label="健保卡號碼"
-                    id="healthCardID"
-                    autoComplete="healthCardID"
-                  />
-                  {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    登入
-                  </Button>
-                  {/* <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid> */}
-                </Box>
-              </Box>
-            </Container>
-          </Paper>
-        </ThemeProvider>
-      </Modal>
-    </>
+        <Typography component="h1" variant="h5">
+          登入
+        </Typography>
+        <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleSubmit}>
+          <TextField
+            margin="normal"
+            type="password"
+            required
+            fullWidth
+            id="nationID"
+            label="身分證字號"
+            name="nationID"
+            autoComplete="nationID"
+            autoFocus
+            value={nationID}
+            onChange={(event) => setNationID(event.target.value)}
+          />
+          <TextField
+            margin="normal"
+            type="password"
+            required
+            fullWidth
+            name="healthCardID"
+            label="健保卡號碼"
+            id="healthCardID"
+            autoComplete="healthCardID"
+            value={healthCardID}
+            onChange={(event) => setHealthCardID(event.target.value)}
+          />
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
+            登入
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   );
 }

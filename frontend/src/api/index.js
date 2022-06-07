@@ -1,5 +1,3 @@
-import useSWR from "swr";
-
 import { userRequest, hospitalRequest, reservationRequest } from "./request";
 export const SessionAPI = {
   createSession: (nationID, healthCardID) =>
@@ -69,6 +67,10 @@ export const HospitalAPI = {
     hospitalRequest({
       method: "post",
       url: `/api/hospitals`,
+      params: {
+        county,
+        township,
+      },
       data: { id, county, name, township, address, vaccineCnt },
     }),
   getHospital: (county, township) =>
@@ -84,31 +86,31 @@ export const HospitalAPI = {
     hospitalRequest({
       method: "put",
       url: `/api/hospitals/${id}`,
+      params: {
+        county,
+        township,
+      },
       data: { id, county, name, township, address, vaccineCnt },
     }),
-  deleteHospital: (hospitalID) =>
+  deleteHospital: (county, township, hospitalID) =>
     hospitalRequest({
       method: "delete",
+      params: {
+        county,
+        township,
+      },
       url: `/api/hospitals/${hospitalID}`,
     }),
 };
 
 export const ReservationAPI = {
-  createReservation: (
-    id,
-    user,
-    hospital,
-    date,
-    Completed,
-    vaccinetype,
-    nationID
-  ) =>
+  createReservation: ({ id, user, hospital, date, completed, vaccineType }) =>
     reservationRequest({
       method: "post",
-      url: `/api/reservations/users/${nationID}`,
-      data: { id, user, hospital, vaccinetype, date, Completed },
+      url: `/api/reservations/users/${user.nationID}`,
+      data: { id, user, hospital, vaccineType, date, completed },
     }),
-  getReservation: (nationID) =>
+  getReservations: (nationID) =>
     reservationRequest({
       method: "get",
       url: `/api/reservations/users/${nationID}`,

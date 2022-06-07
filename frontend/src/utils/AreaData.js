@@ -1,4 +1,4 @@
-const area_data = {
+const areaData = {
   臺北市: [
     "中正區",
     "大同區",
@@ -387,12 +387,4 @@ const area_data = {
   連江縣: ["南竿鄉", "北竿鄉", "莒光鄉", "東引鄉"],
 };
 
-const initHospitalData = {};
-for (let key in area_data) {
-  initHospitalData[key] = {};
-  for (let i = 0; i < area_data[key].length; i++) {
-    initHospitalData[key][area_data[key][i]] = [];
-  }
-}
-
-export { area_data, initHospitalData };
+export { areaData };
