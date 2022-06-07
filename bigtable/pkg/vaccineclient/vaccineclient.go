@@ -196,6 +196,11 @@ func (vaccineClient *VaccineClient) GetHospitals(county string, township string)
 	return vaccineClient.getPrefix(rowKeyPrefix)
 }
 
+func (vaccineClient *VaccineClient) ListHospitals() ([]bigtable.Row, error) {
+	rowKeyPrefix := fmt.Sprintf("hospital")
+	return vaccineClient.getPrefix(rowKeyPrefix)
+}
+
 func (vaccineClient *VaccineClient) DeleteHospital(ID string, county string, township string) error {
 	rowKey := fmt.Sprintf("hospital#%s#%s#%s", county, township, ID)
 	return vaccineClient.delete(rowKey)

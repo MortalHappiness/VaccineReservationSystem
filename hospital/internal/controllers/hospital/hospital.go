@@ -15,6 +15,7 @@ type I interface {
 	PutHospital(c *gin.Context)
 	DeleteHospital(c *gin.Context)
 	GetHospitalByID(c *gin.Context)
+	ListHospitals(c *gin.Context)
 }
 
 // Hospital handles all info-related requests.
