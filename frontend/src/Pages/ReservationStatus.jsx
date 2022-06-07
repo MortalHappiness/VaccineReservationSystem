@@ -79,7 +79,7 @@ export default function ReservationStatus({ user }) {
                     </TableCell>
                     <TableCell align="left">{row.hospital.name}</TableCell>
                     <TableCell align="left">{row.hospital.address}</TableCell>
-                    <TableCell align="left">{row.vaccinetype}</TableCell>
+                    <TableCell align="left">{row.vaccineType}</TableCell>
                   </TableRow>
                 );
               })}
@@ -115,7 +115,7 @@ export default function ReservationStatus({ user }) {
                     </TableCell>
                     <TableCell align="left">{row.hospital.name}</TableCell>
                     <TableCell align="left">{row.hospital.address}</TableCell>
-                    <TableCell align="left">{row.vaccinetype}</TableCell>
+                    <TableCell align="left">{row.vaccineType}</TableCell>
                     <TableCell
                       align="right"
                       onClick={() => handleCancelReservation(row.id)}
