@@ -24,10 +24,10 @@ type ReservationModel struct {
 	// example: Taipei City Hospital Heping Fuyou Branch
 	// required: true
 	Hospital *HospitalModel `json:"hospital"`
-	// The reservation vaccinetype
+	// The reservation vaccineType
 	// example: BNT
 	// required: true
-	VaccineType string `json:"vaccinetype"`
+	VaccineType string `json:"vaccineType"`
 	// The reservation date
 	// example: 1653974953
 	// required: true
