@@ -1,13 +1,11 @@
 version: "3.3"
 services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "3000:80"
   frontend:
     build: ./frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - VITE_USER_BACKEND_URL=http://localhost:7712
-      - VITE_RESERVATION_BACKEND_URL=http://localhost:7713
-      - VITE_HOSPITAL_BACKEND_URL=http://localhost:7714
   user:
     build: ./user
     ports:
