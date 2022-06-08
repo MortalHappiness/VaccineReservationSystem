@@ -20,7 +20,7 @@ metadata:
   labels:
     app: user
 spec:
-  replicas: 1
+  replicas: {{ .Values.user.replicas }}
   selector:
     matchLabels:
       app: user
@@ -47,7 +47,11 @@ spec:
             - name: TABLE_NAME
               value: "{{ .Values.table_name }}"
             - name: SECRET
-              value: "{{ .Values.user.secret }}"
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: user_secret
+                  optional: false
             - name: SPEC_ENABLED
               value: "true"
             - name: SPEC_FILES

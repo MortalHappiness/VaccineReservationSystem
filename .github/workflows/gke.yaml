@@ -50,4 +50,5 @@ jobs:
         gcloud container clusters get-credentials cluster-1 --zone asia-east1
 
     - name: Helm install
-      run: helm upgrade --install vaccine-reservation-system ./helm-charts/vaccine-reservation-system
+      run: |-
+        helm upgrade --install vaccine-reservation-system ./helm-charts/vaccine-reservation-system

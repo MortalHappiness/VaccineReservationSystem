@@ -20,7 +20,7 @@ metadata:
   labels:
     app: hospital
 spec:
-  replicas: 1
+  replicas: {{ .Values.hospital.replicas }}
   selector:
     matchLabels:
       app: hospital
@@ -47,7 +47,11 @@ spec:
             - name: TABLE_NAME
               value: "{{ .Values.table_name }}"
             - name: SECRET
-              value: "{{ .Values.hospital.secret }}"
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: hospital_secret
+                  optional: false
             - name: SPEC_ENABLED
               value: "true"
             - name: SPEC_FILES

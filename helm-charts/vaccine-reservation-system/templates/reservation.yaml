@@ -20,7 +20,7 @@ metadata:
   labels:
     app: reservation
 spec:
-  replicas: 1
+  replicas: {{ .Values.reservation.replicas }}
   selector:
     matchLabels:
       app: reservation
@@ -47,7 +47,11 @@ spec:
             - name: TABLE_NAME
               value: "{{ .Values.table_name }}"
             - name: SECRET
-              value: "{{ .Values.reservation.secret }}"
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: reservation_secret
+                  optional: false
             - name: SPEC_ENABLED
               value: "true"
             - name: SPEC_FILES

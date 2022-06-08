@@ -5,9 +5,11 @@ repository: gcr.io/vaccine-reservation-system
 
 imagePullPolicy: IfNotPresent
 
+frontend:
+  replicas: 3
 user:
-  secret: secret
+  replicas: 3
 hospital:
-  secret: secret
+  replicas: 3
 reservation:
-  secret: secret
+  replicas: 3
