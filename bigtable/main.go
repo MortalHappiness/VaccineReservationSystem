@@ -34,8 +34,7 @@ func readCsvFile(filePath string) ([]string, [][]string) {
 	return headers, rows
 }
 
-func insertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
-	filePath := "data/user.csv"
+func insertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath string) {
 	headers, rows := readCsvFile(filePath)
 	for _, row := range rows {
 		ID := row[0]
@@ -84,8 +83,7 @@ func insertUserRandom(vaccineClient *vaccineclient.VaccineClient, N int) {
 	}
 }
 
-func insertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
-	filePath := "data/hospital.csv"
+func insertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath string) {
 	headers, rows := readCsvFile(filePath)
 	for _, row := range rows {
 		ID := row[0]
@@ -156,8 +154,6 @@ func main() {
 		log.Fatal("TABLE_NAME")
 	}
 
-	fmt.Printf("PROJECT_ID=%s, INSTANCE_ID=%s, TABLE_NAME=%s", projectID, instanceID, tableName)
-
 	// Setup tables and column families
 	ctx := context.Background()
 
@@ -180,8 +176,11 @@ func main() {
 
 	vaccineClient := vaccineclient.NewVaccineClient(projectID, instanceID, tableName)
 
-	// insertUserFromCsvFile(vaccineClient)
-	// insertHospitalFromCsvFile(vaccineClient)
+	insertUserFromCsvFile(vaccineClient, "data/user.csv")
+	insertHospitalFromCsvFile(vaccineClient, "data/hospital.csv")
 	// insertReservationFromCsvFile(vaccineClient)
-	insertUserRandom(vaccineClient, 10)
+	// insertUserRandom(vaccineClient, 10)
+	
+	// insertUserFromCsvFile(vaccineClient, "data/user_10000.csv")
+	// insertHospitalFromCsvFile(vaccineClient, "data/hospitals_all_clean.csv")
 }
