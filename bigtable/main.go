@@ -139,6 +139,8 @@ func main() {
 		log.Fatal("TABLE_NAME")
 	}
 
+	fmt.Printf("PROJECT_ID=%s, INSTANCE_ID=%s, TABLE_NAME=%s", projectID, instanceID, tableName)
+
 	// Setup tables and column families
 	ctx := context.Background()
 

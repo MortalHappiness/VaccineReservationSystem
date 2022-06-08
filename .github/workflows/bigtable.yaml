@@ -1,0 +1,25 @@
+name: setup bigtable
+
+on: push
+
+jobs:
+  bigtable:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: vaccine-reservation-system
+      INSTANCE_ID: instance-1
+      TABLE_NAME: vaccine-reservation-system
+      GOOGLE_APPLICATION_CREDENTIALS: credential.json
+    steps:
+    - uses: actions/checkout@v3
+    - name: Write credential file
+      run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}' > bigtable/credential.json
+    - uses: actions/setup-go@v2
+      with:
+        go-version: "1.17.2"
+    - name: Install golang packages
+      working-directory: bigtable
+      run: go mod tidy
+    - name: Setup bigtable
+      working-directory: bigtable
+      run: go run main.go
