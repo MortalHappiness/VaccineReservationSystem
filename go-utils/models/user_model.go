@@ -103,8 +103,6 @@ func ConvertUserModelToAttributes(nationID string, user *UserModel) map[string]s
 	if user.Phone != "" {
 		attributes["phone"] = user.Phone
 	}
-	if len(user.Vaccines) > 0 {
-		attributes["vaccines"] = strings.Join(user.Vaccines, ",")
-	}
+	attributes["vaccines"] = strings.Join(user.Vaccines, ",")
 	return attributes
 }
