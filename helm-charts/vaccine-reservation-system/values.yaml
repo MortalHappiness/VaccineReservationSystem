@@ -1,0 +1,13 @@
+project_id: vaccine-reservation-system
+instance_id: instance-1
+table_name: vaccine-reservation-system
+repository: gcr.io/vaccine-reservation-system
+
+imagePullPolicy: IfNotPresent
+
+user:
+  secret: secret
+hospital:
+  secret: secret
+reservation:
+  secret: secret

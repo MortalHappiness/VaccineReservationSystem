@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hospital
+  labels:
+    app: hospital
+spec:
+  ports:
+  - port: 7712
+    targetPort: 7712
+    protocol: TCP
+    name: http
+  selector:
+    app: hospital
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hospital
+  labels:
+    app: hospital
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hospital
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: hospital
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+        - image: {{ .Values.repository }}/hospital
+          name: hospital
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          env:
+            - name: PROJECT_ID
+              value: "{{ .Values.project_id }}"
+            - name: INSTANCE_ID
+              value: "{{ .Values.instance_id }}"
+            - name: TABLE_NAME
+              value: "{{ .Values.table_name }}"
+            - name: SECRET
+              value: "{{ .Values.hospital.secret }}"
+            - name: SPEC_ENABLED
+              value: "true"
+            - name: SPEC_FILES
+              value: "./docs/swagger-ui"
+            - name: ACCESS_LOG
+              value: "true"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/credentials.json
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: app-key

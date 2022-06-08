@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: nginx-ingress-class
+spec:
+  controller: k8s.io/ingress-nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vaccine-ingress
+spec:
+  ingressClassName: nginx-ingress-class
+  defaultBackend:
+    service:
+      name: frontend
+      port:
+        number: 3000
+  rules:
+    - http:
+        paths:
+          - path: /api/users
+            pathType: Prefix
+            backend:
+              service:
+                name: user
+                port:
+                  number: 7712
+          - path: /api/session
+            pathType: Prefix
+            backend:
+              service:
+                name: user
+                port:
+                  number: 7712
+          - path: /api/hospitals
+            pathType: Prefix
+            backend:
+              service:
+                name: hospital
+                port:
+                  number: 7712
+          - path: /api/reservations
+            pathType: Prefix
+            backend:
+              service:
+                name: reservation
+                port:
+                  number: 7712
