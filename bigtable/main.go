@@ -101,6 +101,23 @@ func insertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
 	}
 }
 
+func insertAllHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
+	filePath := "data/hospitals_all_clean.csv"
+	headers, rows := readCsvFile(filePath)
+	for _, row := range rows {
+		ID := row[0]
+		county := row[1]
+		township := row[2]
+		attributes := make(map[string]string)
+		for i := 3; i < len(row); i++ {
+			key := headers[i]
+			value := row[i]
+			attributes[key] = value
+		}
+		vaccineClient.CreateOrUpdateHospital(ID, county, township, attributes)
+	}
+}
+
 func insertReservationFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
 	filePath := "data/reservation.csv"
 	headers, rows := readCsvFile(filePath)
