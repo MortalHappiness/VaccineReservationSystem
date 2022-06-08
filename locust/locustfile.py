@@ -3,6 +3,7 @@ import csv
 import uuid
 import random
 import time
+import json
 users = []
 hospitals = []
 with open("/mnt/locust/data/user_10000.csv", "r", newline='') as csvfile:
@@ -50,7 +51,12 @@ class WebsiteUser(HttpUser):
     @task(3)
     def get_hospital_and_post_reservation(self):
         hospital = random.choice(hospitals)
-        # self.client.get(f"/api/hospitals?county={hospital[1]}&township={hospital[2]}")
+        # get hospital
+        self.client.get("/api/hospitals", params={
+            "county": hospital[1],
+            "township": hospital[2]
+        })
+        
         # post reservation
         self.client.post(f"/api/reservations/users/{self.user[0]}", json={
             "id": str(uuid.uuid1()),
@@ -62,6 +68,7 @@ class WebsiteUser(HttpUser):
                 "county": hospital[1],
                 "township": hospital[2]
             },
+            "vaccineType": random.choice(list(json.loads(hospital[-1]).keys())),
             "completed": False,
             "date": int(time.time())
         })
