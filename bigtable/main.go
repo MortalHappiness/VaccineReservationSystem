@@ -5,7 +5,9 @@ import (
 	"encoding/csv"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
+	"strconv"
 
 	"cloud.google.com/go/bigtable"
 	"github.com/joho/godotenv"
@@ -47,8 +49,60 @@ func insertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
 	}
 }
 
+func randomInt(min int, max int) int {
+	return min + rand.Intn(max-min)
+}
+
+func insertUserRandom(vaccineClient *vaccineclient.VaccineClient, N int) {
+	headers := [7]string{"name", "healthCardID", "gender", "birthDay", "address", "phone", "vaccines"}
+	gender := [2]string{"Female", "Male"}
+	addresses := [3]string{"花蓮縣鳳林鎮中長路17號", "高雄市前鎮區中三路15號", "桃園市中壢區吳鳳二街15號"}
+	for i := 0; i < N; i += 1 {
+		ID := string(byte(randomInt(65, 90))) + strconv.Itoa(rand.Intn(2))
+		for j := 0; j < 8; j += 1 {
+			ID = ID + strconv.Itoa(rand.Intn(10))
+		}
+		fmt.Printf("ID: %s\n", ID)
+		attributes := make(map[string]string)
+		attributes[headers[0]] = "Allen"
+		HealthCardID := ""
+		for j := 0; j < 12; j += 1 {
+			HealthCardID = HealthCardID + strconv.Itoa(rand.Intn(10))
+		}
+		attributes[headers[1]] = HealthCardID
+		attributes[headers[2]] = gender[rand.Intn(2)]
+		attributes[headers[3]] = fmt.Sprintf("%d/%02d/%02d", randomInt(1925, 2020), randomInt(1, 12), randomInt(1, 28))
+		attributes[headers[4]] = addresses[rand.Intn(3)]
+		phone := "09"
+		for j := 0; j < 8; j += 1 {
+			phone = phone + strconv.Itoa(rand.Intn(9))
+		}
+		attributes[headers[5]] = phone
+		attributes[headers[6]] = ""
+
+		vaccineClient.CreateOrUpdateUser(ID, attributes)
+	}
+}
+
 func insertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
 	filePath := "data/hospital.csv"
+	headers, rows := readCsvFile(filePath)
+	for _, row := range rows {
+		ID := row[0]
+		county := row[1]
+		township := row[2]
+		attributes := make(map[string]string)
+		for i := 3; i < len(row); i++ {
+			key := headers[i]
+			value := row[i]
+			attributes[key] = value
+		}
+		vaccineClient.CreateOrUpdateHospital(ID, county, township, attributes)
+	}
+}
+
+func insertAllHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
+	filePath := "data/hospitals_all_clean.csv"
 	headers, rows := readCsvFile(filePath)
 	for _, row := range rows {
 		ID := row[0]
@@ -126,7 +180,8 @@ func main() {
 
 	vaccineClient := vaccineclient.NewVaccineClient(projectID, instanceID, tableName)
 
-	insertUserFromCsvFile(vaccineClient)
-	insertHospitalFromCsvFile(vaccineClient)
-	insertReservationFromCsvFile(vaccineClient)
+	// insertUserFromCsvFile(vaccineClient)
+	// insertHospitalFromCsvFile(vaccineClient)
+	// insertReservationFromCsvFile(vaccineClient)
+	insertUserRandom(vaccineClient, 10)
 }
