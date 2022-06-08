@@ -1,0 +1,53 @@
+name: Push to GCR and deploy to GKE
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  setup-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+      with:
+        service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        project_id: vaccine-reservation-system
+        export_default_credentials: true
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker -q
+
+    - name: Build frontend
+      working-directory: frontend
+      run: docker build -t gcr.io/vaccine-reservation-system/frontend .
+    - name: Build user
+      working-directory: user
+      run: docker build -t gcr.io/vaccine-reservation-system/user .
+    - name: Build hospital
+      working-directory: hospital
+      run: docker build -t gcr.io/vaccine-reservation-system/hospital .
+    - name: Build reservation
+      working-directory: reservation
+      run: docker build -t gcr.io/vaccine-reservation-system/reservation .
+
+    - name: Push frontend docker image
+      run: docker push gcr.io/vaccine-reservation-system/frontend
+    - name: Push user docker image
+      run: docker push gcr.io/vaccine-reservation-system/user
+    - name: Push hospital docker image
+      run: docker push gcr.io/vaccine-reservation-system/hospital
+    - name: Push reservation docker image
+      run: docker push gcr.io/vaccine-reservation-system/reservation
+
+    - name: Get GKE credential
+      run: |-
+        gcloud container clusters get-credentials cluster-1 --zone asia-east1
+
+    - name: Helm install
+      run: helm upgrade --install vaccine-reservation-system ./helm-charts/vaccine-reservation-system
