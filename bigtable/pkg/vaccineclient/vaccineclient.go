@@ -73,6 +73,41 @@ func (vaccineClient *VaccineClient) createOrUpdate(rowKey string, columnFamilyNa
 	return nil
 }
 
+func (vaccineClient *VaccineClient) batchCreate(rowKeys[] string, columnFamilyName string, attributes []map[string]string) error {
+	if len(attributes) == 0 {
+		return errors.New("attributes cannot be empty")
+	}
+
+	ctx := context.Background()
+	client, err := bigtable.NewClient(ctx, vaccineClient.projectID, vaccineClient.instanceID)
+	if err != nil {
+		return fmt.Errorf("bigtable.NewClient: %v", err)
+	}
+	defer client.Close()
+	tbl := client.Open(vaccineClient.tableName)
+
+	timestamp := bigtable.Now()
+
+	var muts []*bigtable.Mutation
+
+	for _, attribute := range attributes {
+		mut := bigtable.NewMutation()
+	
+		for columnName, value := range attribute {
+			mut.Set(columnFamilyName, columnName, timestamp, []byte(value))
+		}
+		muts = append(muts, mut)
+	}
+
+	if _, err := tbl.ApplyBulk(ctx, rowKeys, muts); err != nil {
+		return fmt.Errorf("apply bulk: %v", err)
+	}
+
+	fmt.Println("inserted: ", len(rowKeys))
+
+	return nil
+}
+
 func (vaccineClient *VaccineClient) get(rowKey string) (bigtable.Row, error) {
 	ctx := context.Background()
 	client, err := bigtable.NewClient(ctx, vaccineClient.projectID, vaccineClient.instanceID)
@@ -226,4 +261,20 @@ func (vaccineClient *VaccineClient) GetReservations(userID string) ([]bigtable.R
 func (vaccineClient *VaccineClient) DeleteReservation(ID string, userID string) error {
 	rowKey := fmt.Sprintf("reservation#%s#%s", userID, ID)
 	return vaccineClient.delete(rowKey)
+}
+
+func (vaccineClient *VaccineClient) BatchCreateUsers(IDs []string, attributes []map[string]string) error {
+	rowKeys := []string{}
+	for _, ID := range IDs {
+		rowKeys = append(rowKeys, "user#" + ID)
+	}
+	return vaccineClient.batchCreate(rowKeys, "user", attributes)
+}
+
+func (vaccineClient *VaccineClient) BatchCreateHospitals(IDs , counties, townships []string, attributes []map[string]string) error {
+	rowKeys := []string{}
+	for ind, ID := range IDs {
+		rowKeys = append(rowKeys, fmt.Sprintf("hospital#%s#%s#%s", counties[ind], townships[ind], ID))
+	}
+	return vaccineClient.batchCreate(rowKeys, "hospital", attributes)
 }

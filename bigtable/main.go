@@ -52,6 +52,27 @@ func insertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath 
 	}
 }
 
+func batchInsertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath string) {
+	fmt.Println("batch inserting users from path: ", filePath)
+	headers, rows := readCsvFile(filePath)
+
+	IDs := []string{}
+	attributes := []map[string]string{}
+
+	for _, row := range rows {
+		ID := row[0]
+		attribute := make(map[string]string)
+		for i := 1; i < len(row); i++ {
+			key := headers[i]
+			value := row[i]
+			attribute[key] = value
+		}
+		IDs = append(IDs, ID)
+		attributes = append(attributes, attribute)
+	}
+	vaccineClient.BatchCreateUsers(IDs, attributes)
+}
+
 func randomInt(min int, max int) int {
 	return min + rand.Intn(max-min)
 }
@@ -105,6 +126,31 @@ func insertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient, fileP
 			fmt.Println("hospital inserted: ", index)
 		}
 	}
+}
+
+func batchInsertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath string) {
+	fmt.Println("batch inserting hospitals from path: ", filePath)
+	headers, rows := readCsvFile(filePath)
+	IDs := []string{}
+	counties := []string{}
+	townships := []string{}
+	attributes := []map[string]string{}
+	for _, row := range rows {
+		ID := row[0]
+		county := row[1]
+		township := row[2]
+		attribute := make(map[string]string)
+		for i := 3; i < len(row); i++ {
+			key := headers[i]
+			value := row[i]
+			attribute[key] = value
+		}
+		IDs = append(IDs, ID)
+		counties = append(counties, county)
+		townships = append(townships, township)
+		attributes = append(attributes, attribute)
+	}
+	vaccineClient.BatchCreateHospitals(IDs, counties, townships, attributes)
 }
 
 func insertAllHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient) {
@@ -184,11 +230,11 @@ func main() {
 
 	vaccineClient := vaccineclient.NewVaccineClient(projectID, instanceID, tableName)
 
-	insertUserFromCsvFile(vaccineClient, "data/user.csv")
-	insertHospitalFromCsvFile(vaccineClient, "data/hospital.csv")
+	// insertUserFromCsvFile(vaccineClient, "data/user.csv")
+	// insertHospitalFromCsvFile(vaccineClient, "data/hospital.csv")
 	// insertReservationFromCsvFile(vaccineClient)
 	// insertUserRandom(vaccineClient, 10)
 	
-	// insertUserFromCsvFile(vaccineClient, "data/user_10000.csv")
-	// insertHospitalFromCsvFile(vaccineClient, "data/hospitals_all_clean.csv")
+	batchInsertUserFromCsvFile(vaccineClient, "data/user_10000.csv")
+	batchInsertHospitalFromCsvFile(vaccineClient, "data/hospitals_all_clean.csv")
 }
