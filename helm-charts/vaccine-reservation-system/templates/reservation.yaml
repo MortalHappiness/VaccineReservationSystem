@@ -47,11 +47,7 @@ spec:
             - name: TABLE_NAME
               value: "{{ .Values.table_name }}"
             - name: SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: reservation_secret
-                  optional: false
+              value: "my-secret"
             - name: SPEC_ENABLED
               value: "true"
             - name: SPEC_FILES
