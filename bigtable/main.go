@@ -184,11 +184,11 @@ func main() {
 
 	vaccineClient := vaccineclient.NewVaccineClient(projectID, instanceID, tableName)
 
-	// insertUserFromCsvFile(vaccineClient, "data/user.csv")
-	// insertHospitalFromCsvFile(vaccineClient, "data/hospital.csv")
+	insertUserFromCsvFile(vaccineClient, "data/user.csv")
+	insertHospitalFromCsvFile(vaccineClient, "data/hospital.csv")
 	// insertReservationFromCsvFile(vaccineClient)
 	// insertUserRandom(vaccineClient, 10)
 	
-	insertUserFromCsvFile(vaccineClient, "data/user_10000.csv")
-	insertHospitalFromCsvFile(vaccineClient, "data/hospitals_all_clean.csv")
+	// insertUserFromCsvFile(vaccineClient, "data/user_10000.csv")
+	// insertHospitalFromCsvFile(vaccineClient, "data/hospitals_all_clean.csv")
 }
