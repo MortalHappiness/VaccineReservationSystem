@@ -250,6 +250,6 @@ func main() {
 	// insertUserRandom(vaccineClient, 10)
 	
 	// batchInsertUserFromCsvFile(vaccineClient, "data/user_10000.csv")
-	batchInsertUserFromCsvFile(vaccineClient, "data/user_1000000.csv")
+	batchInsertUserFromCsvFile(vaccineClient, "data/user_300000.csv")
 	batchInsertHospitalFromCsvFile(vaccineClient, "data/hospitals_all_clean.csv")
 }
