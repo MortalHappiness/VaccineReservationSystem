@@ -30,10 +30,10 @@ export default function ReservationStatus({ user }) {
   }, []);
 
   const completedReservation = reservations.filter(
-    (reservation) => reservation.completed
+    (reservation) => reservation.completed || Date.now()/1000 >= reservation.date
   );
   const unfinishedReservation = reservations.filter(
-    (reservation) => !reservation.completed
+    (reservation) => !reservation.completed && Date.now()/1000 < reservation.date
   );
 
   // mutation
