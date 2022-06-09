@@ -6,10 +6,10 @@ repository: gcr.io/vaccine-reservation-system
 imagePullPolicy: IfNotPresent
 
 frontend:
-  replicas: 3
+  replicas: 1
 user:
-  replicas: 3
+  replicas: 1
 hospital:
-  replicas: 3
+  replicas: 1
 reservation:
-  replicas: 3
+  replicas: 1
