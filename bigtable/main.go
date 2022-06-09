@@ -59,7 +59,7 @@ func batchInsertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient, file
 	IDs := []string{}
 	attributes := []map[string]string{}
 
-	for _, row := range rows {
+	for index, row := range rows {
 		ID := row[0]
 		attribute := make(map[string]string)
 		for i := 1; i < len(row); i++ {
@@ -69,6 +69,12 @@ func batchInsertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient, file
 		}
 		IDs = append(IDs, ID)
 		attributes = append(attributes, attribute)
+		// can only insert 100000 one times
+		if index % 100000 == 0 {
+			vaccineClient.BatchCreateUsers(IDs, attributes)
+			IDs = []string{}
+			attributes = []map[string]string{}
+		}
 	}
 	vaccineClient.BatchCreateUsers(IDs, attributes)
 }
@@ -135,7 +141,7 @@ func batchInsertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient, 
 	counties := []string{}
 	townships := []string{}
 	attributes := []map[string]string{}
-	for _, row := range rows {
+	for index, row := range rows {
 		ID := row[0]
 		county := row[1]
 		township := row[2]
@@ -149,6 +155,14 @@ func batchInsertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient, 
 		counties = append(counties, county)
 		townships = append(townships, township)
 		attributes = append(attributes, attribute)
+
+		if index % 100000 == 0 {
+			vaccineClient.BatchCreateHospitals(IDs, counties, townships, attributes)
+			IDs = []string{}
+			counties = []string{}
+			townships = []string{}
+			attributes = []map[string]string{}
+		}
 	}
 	vaccineClient.BatchCreateHospitals(IDs, counties, townships, attributes)
 }
@@ -235,6 +249,7 @@ func main() {
 	// insertReservationFromCsvFile(vaccineClient)
 	// insertUserRandom(vaccineClient, 10)
 	
-	batchInsertUserFromCsvFile(vaccineClient, "data/user_10000.csv")
+	// batchInsertUserFromCsvFile(vaccineClient, "data/user_10000.csv")
+	batchInsertUserFromCsvFile(vaccineClient, "data/user_1000000.csv")
 	batchInsertHospitalFromCsvFile(vaccineClient, "data/hospitals_all_clean.csv")
 }
