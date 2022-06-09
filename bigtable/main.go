@@ -35,8 +35,9 @@ func readCsvFile(filePath string) ([]string, [][]string) {
 }
 
 func insertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath string) {
+	fmt.Println("inserting users from path: ", filePath)
 	headers, rows := readCsvFile(filePath)
-	for _, row := range rows {
+	for index, row := range rows {
 		ID := row[0]
 		attributes := make(map[string]string)
 		for i := 1; i < len(row); i++ {
@@ -45,6 +46,9 @@ func insertUserFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath 
 			attributes[key] = value
 		}
 		vaccineClient.CreateOrUpdateUser(ID, attributes)
+		if index % 100 == 0 {
+			fmt.Println("user inserted: ", index)
+		}
 	}
 }
 
@@ -84,8 +88,9 @@ func insertUserRandom(vaccineClient *vaccineclient.VaccineClient, N int) {
 }
 
 func insertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient, filePath string) {
+	fmt.Println("inserting hospitals from path: ", filePath)
 	headers, rows := readCsvFile(filePath)
-	for _, row := range rows {
+	for index, row := range rows {
 		ID := row[0]
 		county := row[1]
 		township := row[2]
@@ -96,6 +101,9 @@ func insertHospitalFromCsvFile(vaccineClient *vaccineclient.VaccineClient, fileP
 			attributes[key] = value
 		}
 		vaccineClient.CreateOrUpdateHospital(ID, county, township, attributes)
+		if index % 100 == 0 {
+			fmt.Println("hospital inserted: ", index)
+		}
 	}
 }
 
